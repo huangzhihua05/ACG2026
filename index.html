@@ -76,8 +76,8 @@
                 <p class="home-post-videos__hint">视频为可选项，不影响文章发布。</p>
                 <div class="home-post-videos__list" id="homePostVideosList"></div>
               </div>
-              <label>
-                文章内容
+              <div class="home-post-body-block">
+                <p class="home-post-body-block__label">文章内容</p>
                 <div class="rich-editor-toolbar" aria-label="富文本编辑工具栏">
                   <p class="rich-editor-toolbar__hint">支持标题、字体、颜色、字号和基础排版</p>
                   <button type="button" class="rich-editor-toolbar__btn" data-editor-command="bold"><strong>B</strong></button>
@@ -98,8 +98,74 @@
                 </div>
                 <div id="homePostBodyEditor" class="rich-editor" contenteditable="true" data-placeholder="请输入正文，支持换行和简单样式"></div>
                 <textarea name="body" id="homePostBodyInput" hidden required></textarea>
+              </div>
+              <div class="home-post-form__actions">
+                <button type="button" class="btn-primary btn-primary--ghost save-draft-btn" id="saveDraftBtn">保存草稿</button>
+                <button type="submit" class="btn-primary">发布文章</button>
+              </div>
+              <div id="draftStatusMsg" class="draft-status" hidden></div>
+            </form>
+          </div>
+        </div>
+
+        <div class="home-post-media-viewer" id="homePostMediaViewer" hidden>
+          <div class="home-post-media-viewer__panel" role="dialog" aria-modal="true" aria-label="媒体预览">
+            <button type="button" class="home-post-media-viewer__close" data-close-media-viewer aria-label="关闭预览">×</button>
+            <div class="home-post-media-viewer__content"></div>
+            <p class="home-post-media-viewer__caption"></p>
+          </div>
+        </div>
+
+        <div class="home-post-modal" id="homeArticleEditModal" hidden>
+          <div class="home-post-modal__overlay" data-close-article-edit-modal></div>
+          <div class="home-post-modal__panel" role="dialog" aria-modal="true" aria-labelledby="homeArticleEditModalTitle">
+            <button type="button" class="home-post-modal__close" aria-label="关闭" data-close-article-edit-modal>x</button>
+            <h2 id="homeArticleEditModalTitle" class="home-section-title">编辑文章</h2>
+            <form class="home-post-form home-post-form--modal" id="homeArticleEditForm">
+              <input type="hidden" name="id" />
+              <label>
+                标题
+                <input type="text" name="title" maxlength="120" placeholder="请输入文章标题" required />
               </label>
-              <button type="submit" class="btn-primary">发布文章</button>
+              <div class="home-post-images">
+                <button type="button" class="btn-primary btn-primary--ghost" id="editAddImageBtn">添加图片</button>
+                <input type="file" id="homeArticleEditImagesInput" accept="image/*" multiple hidden />
+                <p class="home-post-images__hint">第一张图片会自动作为主图。</p>
+                <div class="home-post-images__list" id="homeArticleEditImagesList"></div>
+              </div>
+              <div class="home-post-videos">
+                <button type="button" class="btn-primary btn-primary--ghost" id="editAddVideoBtn">添加视频</button>
+                <input type="file" id="homeArticleEditVideosInput" accept="video/*" multiple hidden />
+                <p class="home-post-videos__hint">视频为可选项，不影响文章保存。</p>
+                <div class="home-post-videos__list" id="homeArticleEditVideosList"></div>
+              </div>
+              <div class="home-post-body-block">
+                <p class="home-post-body-block__label">文章内容</p>
+                <div class="rich-editor-toolbar" aria-label="富文本编辑工具栏">
+                  <p class="rich-editor-toolbar__hint">支持标题、字体、颜色、字号和基础排版</p>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="bold"><strong>B</strong></button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="italic"><em>I</em></button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="underline"><u>U</u></button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="insertUnorderedList">• 列表</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="justifyLeft">左对齐</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="justifyCenter">居中</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="justifyRight">右对齐</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="formatBlock" data-editor-value="h1">H1</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="formatBlock" data-editor-value="h2">H2</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="formatBlock" data-editor-value="h3">H3</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="blockquote">引用</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="createLink">插入链接</button>
+                  <button type="button" class="rich-editor-toolbar__btn" data-editor-command="removeFormat">清除格式</button>
+                  <label class="rich-editor-toolbar__field">颜色<input type="color" id="homeArticleEditTextColor" value="#1a1a1a" /></label>
+                  <label class="rich-editor-toolbar__field">字号<select id="homeArticleEditTextSize"><option value="3">小</option><option value="4" selected>标准</option><option value="5">大</option><option value="6">更大</option></select></label>
+                </div>
+                <div id="homeArticleEditBodyEditor" class="rich-editor" contenteditable="true" data-placeholder="请输入正文，支持换行和简单样式"></div>
+                <textarea name="body" id="homeArticleEditBodyInput" hidden required></textarea>
+              </div>
+              <div class="home-post-form__actions">
+                <div id="articleEditStatusMsg" class="draft-status" hidden></div>
+                <button type="submit" class="btn-primary">保存修改</button>
+              </div>
             </form>
           </div>
         </div>
@@ -170,5 +236,8 @@
     © 腾游电竞工作室 · ACG 资源分享 · 仅供学习交流
   </footer>
   <script src="js/main.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/article-editor.js"></script>
+  <script src="js/auth.js"></script>
 </body>
 </html>
