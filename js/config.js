@@ -1,1 +1,1 @@
-window.TENGYOU_API_BASE = 'https://acg2026.pages.dev';
+window.TENGYOU_API_BASE = 'https://api.12345588.xyz';
