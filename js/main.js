@@ -2,7 +2,7 @@
   const THEME_KEY = 'tengyou-theme';
   const SESSION_KEY = 'tengyou-session';
   const APPROVED_EMAIL = '871412257@qq.com';
-  const API_BASE = window.TENGYOU_API_BASE || window.__TENGYOU_API_BASE || 'https://acg2026.pages.dev';
+  const API_BASE = window.TENGYOU_API_BASE || window.__TENGYOU_API_BASE || 'https://api.12345588.xyz';
   const stateCache = { data: { users: [], articles: [], comments: [], boardPosts: [], drafts: [] } };
 
   function apiFetch(url, options = {}) {
