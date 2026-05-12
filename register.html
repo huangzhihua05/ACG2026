@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>注册 - 腾游电竞工作室</title>
-  <meta name="description" content="腾游电竞工作室用户注册" />
+  <title data-i18n="page_register_title">注册 - 腾游ACG公益资源</title>
+  <meta name="description" content="腾游ACG公益资源用户注册" />
+  <link rel="icon" type="image/png" href="assets/0001.png" />
+  <link rel="apple-touch-icon" href="assets/0001.png" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -14,17 +16,17 @@
 
   <header class="site-header">
     <div class="site-header__inner">
-      <a href="index.html" class="logo" title="腾游电竞工作室">
-        <span class="logo__icon" aria-hidden="true">腾</span>
+      <a href="index.html" class="logo" title="腾游ACG公益资源">
+        <img src="assets/0001.png" alt="腾游ACG公益资源" class="logo__image" />
         <span>腾游ACG公益资源</span>
       </a>
       <nav class="nav-main" aria-label="主导航">
-        <a href="index.html">首页</a>
-        <a href="permanent.html">永久地址（建议保存）</a>
-        <a href="vpn.html">VPN（自用推荐）</a>
-        <a href="faq.html">解压常见问题解答</a>
-        <a href="donate.html">捐赠方式（自愿）</a>
-        <a href="find-game.html">代找游戏</a>
+        <a href="index.html" data-i18n="home">首页</a>
+        <a href="permanent.html" data-i18n="permanent">永久地址（建议保存）</a>
+        <a href="vpn.html" data-i18n="vpn">VPN（自用推荐）</a>
+        <a href="faq.html" data-i18n="faq">解压常见问题解答</a>
+        <a href="donate.html" data-i18n="donate">捐赠方式（自愿）</a>
+        <a href="find-game.html" data-i18n="findGame">代找游戏</a>
         <div class="nav-actions">
           <button type="button" class="icon-btn" id="themeToggle" title="切换深色模式" aria-label="切换深色模式">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -37,9 +39,9 @@
             </svg>
           </button>
           <div class="nav-auth" aria-label="账户">
-            <a href="login.html" class="nav-auth__link">登录</a>
+            <a href="login.html" class="nav-auth__link" data-i18n="login">登录</a>
             <span class="nav-auth__sep" aria-hidden="true">|</span>
-            <a href="register.html" class="nav-auth__link nav-auth__link--active">注册</a>
+            <a href="register.html" class="nav-auth__link nav-auth__link--active" data-i18n="register">注册</a>
           </div>
         </div>
       </nav>
@@ -49,40 +51,40 @@
   <div class="layout-wrap">
     <main>
       <div class="page-hero">
-        <h1>注册</h1>
-        <p>创建账号即表示您已阅读并同意站点服务条款与隐私说明。</p>
+        <h1 data-i18n="page_register_main">注册</h1>
+        <p data-i18n="page_register_desc">创建账号即表示您已阅读并同意站点服务条款与隐私说明。</p>
       </div>
       <div class="content-section auth-panel">
         <form class="auth-form" id="registerForm" action="#" method="post" novalidate>
           <label>
-            用户名
+            <span data-i18n="register_username_label">用户名</span>
             <input type="text" name="username" autocomplete="username" minlength="2" maxlength="32" placeholder="2–32 个字符" required />
           </label>
           <label>
-            邮箱
+            <span data-i18n="register_email_label">邮箱</span>
             <input type="email" name="email" autocomplete="email" placeholder="用于登录与找回密码" required />
           </label>
           <label>
-            密码
+            <span data-i18n="register_password_label">密码</span>
             <input type="password" name="password" autocomplete="new-password" minlength="8" placeholder="至少 8 位" required />
           </label>
           <label>
-            确认密码
+            <span data-i18n="register_password2_label">确认密码</span>
             <input type="password" name="password2" autocomplete="new-password" placeholder="再次输入密码" required />
           </label>
           <label class="auth-form__check">
             <input type="checkbox" name="agree" required />
-            我已了解本站为 ACG 公益资源分享，遵守法律法规
+            <span data-i18n="register_agree">我已了解本站为 ACG 公益资源分享，遵守法律法规</span>
           </label>
-          <button type="submit" class="btn-primary">注册</button>
+          <button type="submit" class="btn-primary" data-i18n="register_submit">注册</button>
         </form>
-        <p class="auth-form__foot">已有账号？<a href="login.html">前往登录</a></p>
+        <p class="auth-form__foot"><span data-i18n="register_has_account">已有账号？</span><a href="login.html" data-i18n="register_go_login">前往登录</a></p>
       </div>
     </main>
 
     <aside class="sidebar" aria-label="侧边栏">
       <div class="sidebar-block">
-        <h3 class="sidebar-block__title">文章搜索</h3>
+        <h3 class="sidebar-block__title" data-i18n="linkSearch">文章搜索</h3>
         <div class="search-box">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -91,7 +93,7 @@
         </div>
       </div>
       <div class="sidebar-block">
-        <h3 class="sidebar-block__title">公告</h3>
+        <h3 class="sidebar-block__title" data-i18n="notice">公告</h3>
         <p class="notice-text">
           <strong>腾游电竞工作室</strong> 专注 ACG 相关资源整理与分享，仅供学习交流。请支持正版，遵守当地法律法规。
         </p>
@@ -122,5 +124,6 @@
   <footer class="site-footer">© 腾游电竞工作室 · ACG 资源分享 · 仅供学习交流</footer>
   <script src="js/config.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
 </body>
 </html>

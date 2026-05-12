@@ -5,54 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>首页 - 腾游ACG公益资源</title>
   <meta name="description" content="腾游ACG公益资源 — ACG 资源分享与交流" />
+  <link rel="icon" type="image/png" href="assets/0001.png" />
+  <link rel="apple-touch-icon" href="assets/0001.png" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="anti-fraud-banner" role="note">
-    <img src="assets/anti-fraud-banner.png" alt="反诈提示横幅" />
-  </div>
-
-  <header class="site-header">
-    <div class="site-header__inner">
-      <a href="index.html" class="logo" title="腾游ACG公益资源">
-        <span class="logo__icon" aria-hidden="true">腾</span>
-        <span>腾游ACG公益资源</span>
-      </a>
-      <nav class="nav-main" aria-label="主导航">
-        <a href="index.html" class="is-active">首页</a>
-        <a href="permanent.html">永久地址（建议保存）</a>
-        <a href="vpn.html">VPN（自用推荐）</a>
-        <a href="faq.html">解压常见问题解答</a>
-        <a href="donate.html">捐赠方式（自愿）</a>
-        <a href="find-game.html">代找游戏</a>
-        <div class="nav-actions">
-          <button type="button" class="icon-btn" id="themeToggle" title="切换深色模式" aria-label="切换深色模式">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          </button>
-          <button type="button" class="icon-btn" id="searchIconBtn" title="搜索文章" aria-label="搜索文章">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </button>
-          <div class="nav-auth" aria-label="账户">
-            <a href="login.html" class="nav-auth__link">登录</a>
-            <span class="nav-auth__sep" aria-hidden="true">|</span>
-            <a href="register.html" class="nav-auth__link">注册</a>
+  <section class="home-banner home-banner--hero" aria-label="站点横幅">
+    <img src="assets/021.jpg" alt="腾游ACG公益资源首页横幅" class="home-banner__img" />
+    <div class="home-banner__overlay">
+      <div class="home-banner__topbar">
+        <a href="index.html" class="logo logo--banner" title="腾游ACG公益资源">
+          <img src="assets/0001.png" alt="腾游ACG公益资源" class="logo__image" />
+          <span>腾游ACG公益资源</span>
+        </a>
+        <nav class="nav-main nav-main--banner" aria-label="主导航">
+          <a href="index.html" class="is-active nav-home-link"><svg class="nav-home-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 11.2 12 4l9 7.2v8.8a1 1 0 0 1-1 1h-5.2a1 1 0 0 1-1-1v-4.8H10.2V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9.8Z" fill="currentColor"/><path d="M3.8 11.5 12 5l8.2 6.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="home">首页</span></a>
+          <a href="permanent.html" data-i18n="permanent">永久地址（建议保存）</a>
+          <a href="vpn.html" data-i18n="vpn">VPN（自用推荐）</a>
+          <a href="faq.html" data-i18n="faq">解压常见问题解答</a>
+          <a href="donate.html" data-i18n="donate">捐赠方式（自愿）</a>
+          <a href="find-game.html" data-i18n="findGame">代找游戏</a>
+          <div class="nav-actions nav-actions--banner">
+            <button type="button" class="icon-btn" id="themeToggle" title="切换深色模式" aria-label="切换深色模式">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
+            <button type="button" class="icon-btn" id="searchIconBtn" title="搜索文章" aria-label="搜索文章">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+            <div class="lang-switch" id="langSwitchWrap">
+              <button type="button" class="icon-btn lang-switch__btn" id="langSwitchBtn" aria-label="切换语言" title="切换语言">
+                <span class="lang-switch__icon" aria-hidden="true">文</span>
+              </button>
+              <div class="lang-switch__menu" id="langSwitchMenu" hidden>
+                <button type="button" data-lang="zh-CN">简体中文</button>
+                <button type="button" data-lang="zh-TW">繁体中文</button>
+                <button type="button" data-lang="en">English</button>
+                <button type="button" data-lang="ko">한국어</button>
+                <button type="button" data-lang="ja">日本語</button>
+                <button type="button" data-lang="fr">Français</button>
+                <button type="button" data-lang="it">Italiano</button>
+                <button type="button" data-lang="de">Deutsch</button>
+                <button type="button" data-lang="ru">Русский</button>
+              </div>
+            </div>
+            <div class="nav-auth" aria-label="账户">
+              <a href="login.html" class="nav-auth__link" data-i18n="nav_login">登录</a>
+              <span class="nav-auth__sep" aria-hidden="true">|</span>
+              <a href="register.html" class="nav-auth__link" data-i18n="nav_register">注册</a>
+            </div>
           </div>
+        </nav>
+      </div>
+      <div class="home-banner__center">
+        <h1 data-i18n="heroTitle">全站资源免登免费下载</h1>
+        <p data-i18n="heroSub">全球单机游戏下载试玩分享中心</p>
+        <div class="home-banner__search search-box search-box--hero">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="search" id="heroSearchInput" data-i18n-placeholder="heroPlaceholder" placeholder="输入任意内容，找到所有关联游戏…" autocomplete="off" list="searchSuggestList" />
+          <button type="button" class="btn-primary btn-primary--sm search-confirm-btn" id="heroSearchBtn" data-i18n="heroSearchBtn">搜索</button>
+          <datalist id="searchSuggestList"></datalist>
         </div>
-      </nav>
+        <div class="home-banner__chips" id="homeBannerChips"></div>
+        <div class="home-banner__translate-tip">
+          <span data-i18n="translate_tip">Site buttons can switch the interface language. The main text can be translated with your browser's built-in translation feature.</span>
+        </div>
+      </div>
     </div>
-  </header>
 
-  <div class="layout-wrap">
+    <section class="home-feature-strip home-feature-strip--banner" aria-label="站点快捷入口">
+      <a class="home-feature-strip__item home-feature-strip__item--public" href="donate.html">
+        <span class="home-feature-strip__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 8.5C6 6.567 9.134 5 13 5s7 1.567 7 3.5-3.134 3.5-7 3.5S6 10.433 6 8.5Z" stroke="currentColor" stroke-width="1.8"/><path d="M6 8.5V16c0 1.933 3.134 3.5 7 3.5s7-1.567 7-3.5V8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.6 11.2 9.8 14.1l1.9 1.9m2.6-4.8 2.8 2.9-1.9 1.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="home-feature-strip__text"><span data-i18n="banner_public">捐赠方式（自愿）</span><strong data-i18n="banner_public_2">随缘支持，感谢厚爱</strong></span>
+        <span class="home-feature-strip__badge">Hot</span>
+      </a>
+      <a class="home-feature-strip__item home-feature-strip__item--help" href="find-game.html">
+        <span class="home-feature-strip__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5 20 7.5v9L12 20.5 4 16.5v-9l8-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 3.5v17M4 7.5l8 4 8-4M8.5 5.7l7 3.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="home-feature-strip__text"><span data-i18n="banner_help">资源求助</span><strong data-i18n="banner_help_2">全站游戏免登录免费下载</strong></span>
+        <span class="home-feature-strip__badge home-feature-strip__badge--new">NEW</span>
+      </a>
+      <a class="home-feature-strip__item home-feature-strip__item--center" href="faq.html">
+        <span class="home-feature-strip__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5 19 7v8.5L12 21l-7-5.5V7l7-3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 7.2v4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="15.9" r="1" fill="currentColor"/></svg>
+        </span>
+        <span class="home-feature-strip__text"><span data-i18n="banner_help_center">帮助中心</span><strong data-i18n="banner_help_center_2">解决 99% 游戏问题</strong></span>
+        <span class="home-feature-strip__badge home-feature-strip__badge--go">GO</span>
+      </a>
+      <a class="home-feature-strip__item home-feature-strip__item--join" href="https://qun.qq.com/universal-share/share?ac=1&authKey=WS%2FBo6%2Fy5wdsHZvo03P85HgANGFVSvrpoXQ6W54ufN3FU20SiqDcKUroUhRsRwzq&busi_data=eyJncm91cENvZGUiOiIxMDgzNDkyNTU2IiwidG9rZW4iOiJvbGh1R0JGVExJQlA4U21yNE1pVlZJRXFZUXhRMEp2WGxyRWRuZW1YK2NzcVpQY3NWempkTG5tWitHZ1NQQ21IIiwidWluIjoiODcxNDEyMjU3In0%3D&data=4aDYjh2WNtBV22v83Ty-ItReLvPhFdgNPTOu--qXsFjiOgz3w5wgn8PHvu9HM6BWNT-YOzT3VB8xzfx5HYpnzg&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener noreferrer">
+        <span class="home-feature-strip__icon home-feature-strip__icon--qq" aria-hidden="true">
+          <img src="assets/qq-logo.png" alt="QQ" />
+        </span>
+        <span class="home-feature-strip__text"><span data-i18n="banner_join">加入交流群</span><strong data-i18n="banner_join_2">求助、问题反馈、求资源、QQ群</strong></span>
+        <span class="home-feature-strip__badge">QQ</span>
+      </a>
+    </section>
+  </section>
+
+  <div class="layout-wrap layout-wrap--home">
     <main aria-label="文章列表">
       <div class="content-section">
         <div class="home-post-tools">
           <button type="button" class="btn-primary" id="openPostFormBtn">发表文章</button>
-          <span class="home-post-tools__note">仅管理员可发表文章</span>
+          <button type="button" class="btn-primary btn-primary--ghost" id="importArticleBtn" hidden>导入迁移包</button>
+          <button type="button" class="btn-primary btn-primary--ghost" id="exportAllArticlesBtn" hidden>导出所有文章</button>
+          <input type="file" id="importArticleFileInput" accept=".json,application/json" multiple hidden />
+          <span class="home-post-tools__note">仅管理员可发表文章 <span class="home-post-tools__note-extra">（最新发布~坚持每日更新游戏资源）</span></span>
         </div>
+        <div id="importDebugInfo" class="draft-status" hidden></div>
 
         <div class="home-post-modal" id="homePostModal" hidden>
           <div class="home-post-modal__overlay" data-close-post-modal></div>
@@ -75,6 +143,14 @@
                 <input type="file" id="homePostVideosInput" accept="video/*" multiple hidden />
                 <p class="home-post-videos__hint">视频为可选项，不影响文章发布。</p>
                 <div class="home-post-videos__list" id="homePostVideosList"></div>
+              </div>
+              <div class="home-post-tags">
+                <p class="home-post-tags__label">标签栏</p>
+                <div class="home-post-tags__input-row">
+                  <input type="text" id="homePostTagInput" placeholder="输入标签后按确定添加" maxlength="24" />
+                  <button type="button" class="btn-primary btn-primary--ghost" id="addTagBtn">确定</button>
+                </div>
+                <div class="home-post-tags__list" id="homePostTagsList"></div>
               </div>
               <div class="home-post-body-block">
                 <p class="home-post-body-block__label">文章内容</p>
@@ -139,6 +215,14 @@
                 <p class="home-post-videos__hint">视频为可选项，不影响文章保存。</p>
                 <div class="home-post-videos__list" id="homeArticleEditVideosList"></div>
               </div>
+              <div class="home-post-tags">
+                <p class="home-post-tags__label">标签栏</p>
+                <div class="home-post-tags__input-row">
+                  <input type="text" id="homeArticleEditTagInput" placeholder="输入标签后按确定添加" maxlength="24" />
+                  <button type="button" class="btn-primary btn-primary--ghost" id="editAddTagBtn">确定</button>
+                </div>
+                <div class="home-post-tags__list" id="homeArticleEditTagsList"></div>
+              </div>
               <div class="home-post-body-block">
                 <p class="home-post-body-block__label">文章内容</p>
                 <div class="rich-editor-toolbar" aria-label="富文本编辑工具栏">
@@ -173,61 +257,43 @@
         <h2 class="home-section-title">最新文章</h2>
         <div id="homeArticleList" class="article-list"></div>
         <nav class="board-pagination" id="homePagination" aria-label="文章分页" hidden></nav>
+
       </div>
     </main>
 
-    <aside class="sidebar" aria-label="侧边栏">
-      <div class="sidebar-block">
-        <h3 class="sidebar-block__title">文章搜索</h3>
-        <div class="search-box search-box--inline">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input type="search" id="sidebarSearch" placeholder="文章搜索…" autocomplete="off" list="searchSuggestList" />
-          <button type="button" class="btn-primary btn-primary--sm search-confirm-btn" id="searchConfirmBtn">确认</button>
-          <datalist id="searchSuggestList"></datalist>
-        </div>
-        <div class="search-history" id="searchHistoryWrap" hidden>
-          <div class="search-history__head">
-            <span>历史搜索记录</span>
-            <button type="button" class="search-history__clear" id="clearSearchHistoryBtn">清空</button>
-          </div>
-          <div class="search-history__list" id="searchHistoryList"></div>
-        </div>
-      </div>
-
+    <aside class="sidebar sidebar--home" aria-label="侧边栏">
       <div class="sidebar-block">
         <h3 class="sidebar-block__title">公告</h3>
         <p class="notice-text">
-          <strong>腾游电竞工作室</strong> 专注 ACG 相关资源整理与分享，仅供学习交流。请支持正版，遵守当地法律法规。本站不托管任何商业发行内容，如有侵权请联系删除通道见页脚说明。
+          <strong>腾游汉化工作室</strong> 专注 ACG 相关资源整理与分享，仅供学习交流。请支持正版，遵守当地法律法规。本站不托管任何商业发行内容，如有侵权请联系删除通道见页脚说明。
         </p>
       </div>
 
       <div class="sidebar-block">
         <h3 class="sidebar-block__title">一言</h3>
-        <blockquote class="hitokoto">
-          长风破浪会有时，直挂云帆济沧海。
-          <cite>——李白《行路难》</cite>
-        </blockquote>
+        <div class="hitokoto-carousel" id="hitokotoCarousel" aria-live="polite">
+          <button type="button" class="hitokoto-carousel__nav hitokoto-carousel__nav--prev" id="hitokotoPrevBtn" aria-label="上一句哲学名句">‹</button>
+          <div class="hitokoto-carousel__viewport">
+            <blockquote class="hitokoto" id="hitokotoQuote">
+              <p class="hitokoto__text" id="hitokotoText">知者不惑，仁者不忧，勇者不惧。</p>
+              <cite id="hitokotoSource">——《论语·子罕》</cite>
+            </blockquote>
+          </div>
+          <button type="button" class="hitokoto-carousel__nav hitokoto-carousel__nav--next" id="hitokotoNextBtn" aria-label="下一句哲学名句">›</button>
+        </div>
       </div>
 
       <div class="sidebar-block">
         <h3 class="sidebar-block__title">标签云</h3>
-        <div class="tag-cloud">
-          <a href="#" class="tc-1">2059</a>
-          <a href="#" class="tc-2">Amnesia</a>
-          <a href="#" class="tc-3">Galgame</a>
-          <a href="#" class="tc-4">汉化</a>
-          <a href="#" class="tc-5">OST</a>
-          <a href="#" class="tc-6">像素</a>
-          <a href="#" class="tc-7">全年龄</a>
-          <a href="#" class="tc-8">补丁</a>
-        </div>
+        <div class="tag-cloud" id="tagCloudHome"></div>
       </div>
-      <div class="sidebar-block">
-        <h3 class="sidebar-block__title">热度排行</h3>
+
+      <div class="sidebar-block sidebar-block--rank">
+        <div class="sidebar-block__head">
+          <h3 class="sidebar-block__title">热度排行</h3>
+          <a href="ranking.html">更多</a>
+        </div>
         <div id="hotRankHome" class="hot-rank"></div>
-        <a class="hot-rank__more" id="hotRankMoreBtn" href="ranking.html">更多</a>
       </div>
     </aside>
   </div>
@@ -236,6 +302,8 @@
     © 腾游电竞工作室 · ACG 资源分享 · 仅供学习交流
   </footer>
   <script src="js/config.js"></script>
+  <script src="js/hitokoto-quotes.js"></script>
+  <script src="js/hitokoto-carousel.js"></script>
   <script src="js/main.js"></script>
   <script src="js/home.js"></script>
   <script src="js/article-editor.js"></script>

@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>捐赠方式（自愿） - 腾游电竞工作室</title>
-  <meta name="description" content="腾游电竞工作室自愿捐赠说明" />
+  <title data-i18n="page_donate_title">捐赠方式（自愿） - 腾游ACG公益资源</title>
+  <meta name="description" content="腾游ACG公益资源自愿捐赠说明" />
+  <link rel="icon" type="image/png" href="assets/0001.png" />
+  <link rel="apple-touch-icon" href="assets/0001.png" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -14,17 +16,17 @@
 
   <header class="site-header">
     <div class="site-header__inner">
-      <a href="index.html" class="logo" title="腾游电竞工作室">
-        <span class="logo__icon" aria-hidden="true">腾</span>
+      <a href="index.html" class="logo" title="腾游ACG公益资源">
+        <img src="assets/0001.png" alt="腾游ACG公益资源" class="logo__image" />
         <span>腾游ACG公益资源</span>
       </a>
       <nav class="nav-main" aria-label="主导航">
-        <a href="index.html">首页</a>
-        <a href="permanent.html">永久地址（建议保存）</a>
-        <a href="vpn.html">VPN（自用推荐）</a>
-        <a href="faq.html">解压常见问题解答</a>
-        <a href="donate.html" class="is-active">捐赠方式（自愿）</a>
-        <a href="find-game.html">代找游戏</a>
+        <a href="index.html" data-i18n="home">首页</a>
+        <a href="permanent.html" data-i18n="permanent">永久地址（建议保存）</a>
+        <a href="vpn.html" data-i18n="vpn">VPN（自用推荐）</a>
+        <a href="faq.html" data-i18n="faq">解压常见问题解答</a>
+        <a href="donate.html" class="is-active" data-i18n="donate">捐赠方式（自愿）</a>
+        <a href="find-game.html" data-i18n="findGame">代找游戏</a>
         <div class="nav-actions">
           <button type="button" class="icon-btn" id="themeToggle" title="切换深色模式" aria-label="切换深色模式">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -37,9 +39,9 @@
             </svg>
           </button>
           <div class="nav-auth" aria-label="账户">
-            <a href="login.html" class="nav-auth__link">登录</a>
+            <a href="login.html" class="nav-auth__link" data-i18n="login">登录</a>
             <span class="nav-auth__sep" aria-hidden="true">|</span>
-            <a href="register.html" class="nav-auth__link">注册</a>
+            <a href="register.html" class="nav-auth__link" data-i18n="register">注册</a>
           </div>
         </div>
       </nav>
@@ -49,8 +51,8 @@
   <div class="layout-wrap">
     <main>
       <div class="page-hero">
-        <h1>捐赠方式（自愿）</h1>
-        <p>本站不采取任何收费，属于纯公益非收费网站，所有汉化作品全部都可以去对应的帖子进行无限制下载。</p>
+        <h1 data-i18n="donate_title_main">捐赠方式（自愿）</h1>
+        <p data-i18n="donate_desc">本站不采取任何收费，属于纯公益非收费网站，所有汉化作品全部都可以去对应的帖子进行无限制下载。</p>
       </div>
       <div class="content-section donate-content">
         <div class="donate-hero-card donate-hero-card--accent">
@@ -87,6 +89,11 @@
             <img src="assets/donate-qr.jpg" alt="支付宝小荷包付款码预览" />
           </a>
           <a href="donate-qr.html" class="donate-qr__open-link">点此查看大图</a>
+          <div class="donate-qr__note">
+            <p>支付方式②：1.使用你自己的USDC钱包支付或第三方USDC代付平台</p>
+            <p>2.本站USDC钱包地址（TRON）：TMU7zfJHVTaBzjrF2jdc9WGDPdKpc3aBoW</p>
+            <p>3.支付后把你的名字和金额以邮箱的方式发送至 <a href="mailto:3345439588@qq.com">3345439588@qq.com</a></p>
+          </div>
         </div>
 
         <div class="donate-card donate-card--purple">
