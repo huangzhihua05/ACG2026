@@ -1238,16 +1238,16 @@ img {
   }
 
   .home-feature-strip {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    transform: none;
-    width: 100%;
+    position: absolute;
+    left: 50%;
+    bottom: -18px;
+    transform: translateX(-50%);
+    width: calc(100% - 16px);
     max-width: none;
-    padding: 0 12px;
-    margin: 12px 0 0;
+    padding: 0;
+    margin: 0;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 8px;
     z-index: 4;
   }
 
@@ -1296,12 +1296,12 @@ img {
   }
 
   .layout-wrap {
-    padding: 54px 10px 28px;
+    padding: 18px 10px 28px;
     gap: 12px;
   }
 
   .layout-wrap--home {
-    padding-top: 56px;
+    padding-top: 18px;
   }
 
   .content-section,
@@ -3623,10 +3623,10 @@ img {
     position: relative;
     z-index: 3;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     background: rgba(0, 0, 0, 0.18);
     padding: 8px 10px;
     border-radius: 16px;
@@ -3647,10 +3647,15 @@ img {
   .nav-main--banner {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
     gap: 6px;
-    justify-content: center;
-    overflow: visible;
+    justify-content: flex-end;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    white-space: nowrap;
   }
 
   .nav-main--banner > a,
@@ -3676,9 +3681,10 @@ img {
     background: transparent;
     border-left: none;
     padding-left: 0;
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
+    width: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    margin-left: auto;
   }
 
   .icon-btn {
@@ -3688,16 +3694,16 @@ img {
   }
 
   .home-banner__center {
-    position: relative;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     z-index: 3;
-    width: 100%;
+    width: min(92vw, 760px);
     max-width: 100%;
     text-align: center;
     padding: 0 6px;
-    margin: 4px 0 0;
-    transform: none;
-    left: auto;
-    top: auto;
+    margin: 0;
     background: transparent;
     color: #fff;
   }
