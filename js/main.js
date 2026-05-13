@@ -35,14 +35,16 @@
     const remote = res.item || stateCache.data;
     const localArticles = loadLocalArticles();
     const remoteArticles = Array.isArray(remote.articles) ? remote.articles : [];
-    const mergedArticles = [...remoteArticles];
+    const mergedArticles = attachPersistedTags([...remoteArticles]);
     localArticles.forEach((item) => {
       if (!mergedArticles.some((x) => String(x.id) === String(item.id))) mergedArticles.push(item);
     });
-    stateCache.data = { ...remote, articles: mergedArticles };
-    saveLocalArticles(mergedArticles);
-    if (mergedArticles.length !== remoteArticles.length) {
-      try { await saveState({ ...remote, articles: mergedArticles }); } catch (err) {}
+    const normalizedMerged = attachPersistedTags(mergedArticles);
+    stateCache.data = { ...remote, articles: normalizedMerged };
+    saveLocalArticles(normalizedMerged);
+    syncTagsFromItems(normalizedMerged);
+    if (normalizedMerged.length !== remoteArticles.length) {
+      try { await saveState({ ...remote, articles: normalizedMerged }); } catch (err) {}
     }
     return stateCache.data;
   }
@@ -50,27 +52,29 @@
   async function apiLoadArticles() {
     const localItems = loadLocalArticles();
     if (localItems.length) {
-      stateCache.data.articles = localItems;
+      stateCache.data.articles = attachPersistedTags(localItems);
       try {
         const res = await apiFetch('/api/articles');
         const apiItems = Array.isArray(res.items) ? res.items : [];
-        const merged = dedupeArticles([...apiItems, ...localItems]);
+        const merged = attachPersistedTags([...apiItems, ...localItems]);
         stateCache.data.articles = merged;
         saveLocalArticles(merged);
+        syncTagsFromItems(merged);
         return merged;
       } catch (e) {
-        return localItems;
+        return stateCache.data.articles;
       }
     }
     try {
       const res = await apiFetch('/api/articles');
       const apiItems = Array.isArray(res.items) ? res.items : [];
-      const merged = dedupeArticles(apiItems);
+      const merged = attachPersistedTags(apiItems);
       stateCache.data.articles = merged;
       saveLocalArticles(merged);
+      syncTagsFromItems(merged);
       return merged;
     } catch (e) {
-      return Array.isArray(stateCache.data.articles) ? dedupeArticles(stateCache.data.articles) : [];
+      return attachPersistedTags(Array.isArray(stateCache.data.articles) ? stateCache.data.articles : []);
     }
   }
   async function apiLoadArticle(id) { const res = await apiFetch('/api/articles/' + encodeURIComponent(id)); return res.item || null; }
@@ -125,6 +129,26 @@
   function getArticleTagsStorageKey() { return 'tengyou-article-tags'; }
   function loadArticleTagsCache() { try { const raw = localStorage.getItem(getArticleTagsStorageKey()); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; } }
   function saveArticleTagsCache(map) { try { localStorage.setItem(getArticleTagsStorageKey(), JSON.stringify(map || {})); } catch (e) {} }
+  function getPersistedTags(articleId) {
+    const cache = loadArticleTagsCache();
+    return Array.isArray(cache[String(articleId)]) ? cache[String(articleId)] : [];
+  }
+  function attachPersistedTags(items) {
+    return dedupeArticles(items).map((item) => {
+      const next = { ...item };
+      const persisted = getPersistedTags(next.id);
+      if ((!Array.isArray(next.tags) || !next.tags.length) && persisted.length) next.tags = persisted;
+      return next;
+    });
+  }
+  function syncTagsFromItems(items) {
+    const map = loadArticleTagsCache();
+    dedupeArticles(items).forEach((item) => {
+      if (Array.isArray(item.tags) && item.tags.length) map[String(item.id)] = item.tags.slice();
+    });
+    saveArticleTagsCache(map);
+    return map;
+  }
   function buildArticleExportPayload(article) {
     const normalized = normalizeArticle(article || {});
     return {
@@ -623,7 +647,7 @@
     if (editTextColor && editBodyEditor) editTextColor.addEventListener('change', () => { editBodyEditor.focus(); try { document.execCommand('foreColor', false, editTextColor.value); } catch {} if (editBodyInput) editBodyInput.value = editBodyEditor.innerHTML; });
     if (editTextSize && editBodyEditor) editTextSize.addEventListener('change', () => { editBodyEditor.focus(); try { document.execCommand('fontSize', false, editTextSize.value); } catch {} if (editBodyInput) editBodyInput.value = editBodyEditor.innerHTML; });
     if (editBodyEditor) editBodyEditor.addEventListener('input', () => { if (editBodyInput) editBodyInput.value = editBodyEditor.innerHTML; });
-    if (editForm) editForm.addEventListener('submit', async (e) => { e.preventDefault(); const session = TengyouSession.get(); if (!session || !isAdmin(session)) return alert('仅管理员可编辑文章'); const id = editIdInput ? editIdInput.value : ''; const title = editTitleInput ? editTitleInput.value.trim() : ''; const bodyHtml = editBodyEditor ? editBodyEditor.innerHTML.trim() : ''; const bodyText = editBodyEditor ? editBodyEditor.innerText.trim() : ''; const cache = editArticleCache || {}; const resolvedImages = editImages.length ? editImages.slice() : (Array.isArray(cache.images) && cache.images.length ? cache.images.slice() : (cache.image ? [cache.image] : [])); const resolvedVideos = editVideos.length ? editVideos.slice() : (Array.isArray(cache.videos) ? cache.videos.slice() : []); const resolvedTags = editTags.length ? editTags.slice() : (Array.isArray(cache.tags) ? cache.tags.slice() : []); const nextBodyHtml = bodyHtml || cache.bodyHtml || `<p>${esc(bodyText || cache.body || title || '')}</p>`; if (!id || !title || !resolvedImages.length) return alert('请填写标题并至少保留一张图片'); const payload = { title, image: resolvedImages[0], images: resolvedImages, body: bodyText || cache.body || title, bodyHtml: nextBodyHtml, videos: resolvedVideos, tags: resolvedTags }; const localUpdated = normalizeArticle({ ...(cache || {}), ...payload, id: cache.id || id, ts: cache.ts || Date.now(), authorEmail: cache.authorEmail || (TengyouSession.get() || {}).email || '' }); const localArticles = loadLocalArticles(); const nextArticles = localArticles.some((item) => String(item.id) === String(id)) ? localArticles.map((item) => String(item.id) === String(id) ? { ...item, ...localUpdated } : item) : [localUpdated, ...localArticles]; stateCache.data.articles = dedupeArticles(nextArticles); saveLocalArticles(stateCache.data.articles); const tagMap = loadArticleTagsCache(); tagMap[String(id)] = resolvedTags.slice(); saveArticleTagsCache(tagMap); await renderHome(); await renderRanking(); try { await apiUpdateArticle(id, payload); const latest = await apiLoadArticles(); const mergedLatest = latest.map((item) => String(item.id) === String(id) ? { ...item, tags: resolvedTags.slice() } : item); stateCache.data.articles = dedupeArticles(mergedLatest); saveLocalArticles(stateCache.data.articles); saveArticleTagsCache({ ...tagMap, [String(id)]: resolvedTags.slice() }); try { await saveState({ ...(stateCache.data || {}), articles: stateCache.data.articles }); } catch (err) {} } catch (err) { console.warn('[edit-save-error]', err); } finally { closeEditModal(); await renderHome(); await renderRanking(); alert('修改已保存'); } });
+    if (editForm) editForm.addEventListener('submit', async (e) => { e.preventDefault(); const session = TengyouSession.get(); if (!session || !isAdmin(session)) return alert('仅管理员可编辑文章'); const id = editIdInput ? editIdInput.value : ''; const title = editTitleInput ? editTitleInput.value.trim() : ''; const bodyHtml = editBodyEditor ? editBodyEditor.innerHTML.trim() : ''; const bodyText = editBodyEditor ? editBodyEditor.innerText.trim() : ''; const cache = editArticleCache || {}; const resolvedImages = editImages.length ? editImages.slice() : (Array.isArray(cache.images) && cache.images.length ? cache.images.slice() : (cache.image ? [cache.image] : [])); const resolvedVideos = editVideos.length ? editVideos.slice() : (Array.isArray(cache.videos) ? cache.videos.slice() : []); const resolvedTags = editTags.length ? editTags.slice() : (Array.isArray(cache.tags) ? cache.tags.slice() : []); const nextBodyHtml = bodyHtml || cache.bodyHtml || `<p>${esc(bodyText || cache.body || title || '')}</p>`; if (!id || !title || !resolvedImages.length) return alert('请填写标题并至少保留一张图片'); const payload = { title, image: resolvedImages[0], images: resolvedImages, body: bodyText || cache.body || title, bodyHtml: nextBodyHtml, videos: resolvedVideos, tags: resolvedTags }; const localUpdated = normalizeArticle({ ...(cache || {}), ...payload, id: cache.id || id, ts: cache.ts || Date.now(), authorEmail: cache.authorEmail || (TengyouSession.get() || {}).email || '' }); const localArticles = loadLocalArticles(); const nextArticles = localArticles.some((item) => String(item.id) === String(id)) ? localArticles.map((item) => String(item.id) === String(id) ? { ...item, ...localUpdated } : item) : [localUpdated, ...localArticles]; stateCache.data.articles = attachPersistedTags(dedupeArticles(nextArticles)); saveLocalArticles(stateCache.data.articles); const tagMap = loadArticleTagsCache(); if (resolvedTags.length) tagMap[String(id)] = resolvedTags.slice(); else if (Array.isArray(cache.tags) && cache.tags.length) tagMap[String(id)] = cache.tags.slice(); saveArticleTagsCache(tagMap); await renderHome(); await renderRanking(); try { await apiUpdateArticle(id, payload); const latest = await apiLoadArticles(); const mergedLatest = attachPersistedTags(latest.map((item) => String(item.id) === String(id) ? { ...item, tags: resolvedTags.length ? resolvedTags.slice() : (Array.isArray(cache.tags) ? cache.tags.slice() : []) } : item)); stateCache.data.articles = mergedLatest; saveLocalArticles(mergedLatest); syncTagsFromItems(mergedLatest); try { await saveState({ ...(stateCache.data || {}), articles: stateCache.data.articles }); } catch (err) {} } catch (err) { console.warn('[edit-save-error]', err); } finally { closeEditModal(); await renderHome(); await renderRanking(); alert('修改已保存'); } });
     const homeList = document.getElementById('homeArticleList'); if (homeList) homeList.addEventListener('click', async (e) => { const like = e.target.closest('[data-like-article]'); const manage = e.target.closest('[data-home-manage]'); if (like) { await apiLikeArticle(like.dataset.likeArticle); await renderHome(); await renderRanking(); return; } if (!manage) return; const articles = await apiLoadArticles(); const a = articles.find((x) => String(x.id) === String(manage.dataset.articleId)); if (!a) return; const action = manage.dataset.homeManage; if (action === 'export' && isAdmin(TengyouSession.get())) { try { const payload = await exportArticle(a.id); alert('已导出：' + (payload.article.title || '文章')); } catch (err) { alert(err.message || '导出失败'); } } else if (action === 'pin' && isAdmin(TengyouSession.get())) { await apiUpdateArticle(a.id, { isPinned: !a.isPinned }); await renderHome(); await renderRanking(); } else if (action === 'edit' && isAdmin(TengyouSession.get())) { openEditModal(a); } else if (action === 'delete' && isAdmin(TengyouSession.get())) { if (window.confirm('确定删除这篇文章吗？')) { const localArticles = loadLocalArticles().filter((item) => String(item.id) !== String(a.id)); stateCache.data.articles = localArticles; saveLocalArticles(localArticles); try { await apiDeleteArticle(a.id); } catch (err) { console.warn('[delete-remote]', err); } try { await saveState({ ...(stateCache.data || {}), articles: localArticles }); } catch (err) { console.warn('[delete-sync]', err); } await renderHome(); await renderRanking(); } } });
     const exportAllBtn = document.getElementById('exportAllArticlesBtn'); if (exportAllBtn && !exportAllBtn.dataset.boundExportAll) { exportAllBtn.dataset.boundExportAll = '1'; exportAllBtn.addEventListener('click', async () => { const session = TengyouSession.get(); if (!isAdmin(session)) return; try { const localArticles = loadLocalArticles(); const payload = await exportAllArticles(localArticles); alert('已导出全部文章：' + (Array.isArray(payload.articles) ? payload.articles.length : 0) + ' 篇'); } catch (err) { alert(err.message || '导出失败'); } }); }
     const homeImportBtn = document.getElementById('importArticleBtn'); if (homeImportBtn && !homeImportBtn.dataset.boundImport) { homeImportBtn.dataset.boundImport = '1'; homeImportBtn.addEventListener('click', (e) => { const session = TengyouSession.get(); if (!isAdmin(session)) return; const input = document.getElementById('importArticleFileInput'); if (input) input.click(); }); }

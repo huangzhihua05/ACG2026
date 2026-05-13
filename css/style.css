@@ -890,6 +890,26 @@ img {
     gap: 6px;
   }
 
+  .home-feature-strip {
+    position: static;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    margin: 12px 0 0;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .home-feature-strip__item--public,
+  .home-feature-strip__item--help,
+  .home-feature-strip__item--center,
+  .home-feature-strip__item--join {
+    grid-column: auto;
+  }
+
   .layout-wrap {
     grid-template-columns: 1fr;
     gap: 16px;
