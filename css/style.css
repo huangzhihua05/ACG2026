@@ -1064,35 +1064,44 @@ img {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: hidden;
     flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-main--banner::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-main--banner > a,
   .nav-main--banner > .nav-auth,
-  .nav-main--banner > .icon-btn {
+  .nav-main--banner > .icon-btn,
+  .nav-main--banner > .lang-switch {
     display: inline-flex;
     width: auto;
-    justify-content: flex-start;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    justify-content: center;
   }
 
-  .nav-actions,
+  .nav-actions--banner {
+    width: auto;
+    margin-left: auto;
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+  }
+
   .nav-auth {
+    width: auto;
     margin-left: 0;
     padding-left: 0;
     border-left: 0;
     gap: 6px;
-    width: 100%;
-  }
-
-  .nav-actions {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    margin-left: 0;
-    min-width: 0;
   }
 
   .home-banner {
@@ -1229,16 +1238,16 @@ img {
   }
 
   .home-feature-strip {
-    position: absolute;
-    left: 50%;
-    bottom: -18px;
-    transform: translateX(-50%);
-    width: calc(100% - 16px);
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
     max-width: none;
-    padding: 0;
-    margin: 0;
+    padding: 0 12px;
+    margin: 12px 0 0;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
     z-index: 4;
   }
 
