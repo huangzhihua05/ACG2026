@@ -1089,7 +1089,7 @@ img {
     padding: 0;
     backdrop-filter: blur(6px);
     isolation: isolate;
-    pointer-events: none;
+    pointer-events: auto;
   }
 
   .mobile-home-menu.is-open {
