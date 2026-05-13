@@ -1081,7 +1081,7 @@ img {
   .mobile-home-menu {
     position: fixed;
     inset: 0;
-    z-index: 60;
+    z-index: 9999;
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
@@ -1104,6 +1104,9 @@ img {
     border-radius: 18px;
     background: rgba(16, 23, 42, 0.96);
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+    position: relative;
+    z-index: 10000;
+    pointer-events: auto;
   }
 
   .mobile-home-menu__panel a,
@@ -1167,7 +1170,7 @@ img {
 
   .home-banner__overlay > :not(.home-banner__topbar):not(.home-banner__center) {
     position: relative;
-    z-index: 2;
+    z-index: 1;
   }
 
   .home-banner__topbar > .nav-main--banner,
@@ -1252,8 +1255,13 @@ img {
     transform: translate(-50%, -50%);
     width: min(92vw, 760px);
     padding: 0;
-    z-index: 2;
+    z-index: 1;
     text-align: center;
+    pointer-events: none;
+  }
+
+  .home-banner__center * {
+    pointer-events: auto;
   }
 
   .home-banner__center h1 {
