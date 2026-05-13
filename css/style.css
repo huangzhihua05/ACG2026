@@ -1089,12 +1089,21 @@ img {
     padding: 0;
     backdrop-filter: blur(6px);
     isolation: isolate;
-    pointer-events: auto;
+    pointer-events: none;
   }
 
   .mobile-home-menu.is-open {
     display: flex;
     pointer-events: auto;
+  }
+
+  .mobile-home-menu.is-open .mobile-home-menu__panel {
+    animation: mobileMenuIn 0.2s ease-out;
+  }
+
+  @keyframes mobileMenuIn {
+    from { transform: translateX(12px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
   }
 
   body.mobile-home-menu-open {
