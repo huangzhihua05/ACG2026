@@ -18,6 +18,11 @@
           <img src="assets/0001.png" alt="腾游ACG公益资源" class="logo__image" />
           <span>腾游ACG公益资源</span>
         </a>
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="打开菜单" aria-expanded="false" aria-controls="mobileHomeMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
         <nav class="nav-main nav-main--banner" aria-label="主导航">
           <a href="index.html" class="is-active nav-home-link"><svg class="nav-home-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 11.2 12 4l9 7.2v8.8a1 1 0 0 1-1 1h-5.2a1 1 0 0 1-1-1v-4.8H10.2V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9.8Z" fill="currentColor"/><path d="M3.8 11.5 12 5l8.2 6.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="home">首页</span></a>
           <a href="permanent.html" data-i18n="permanent">永久地址（建议保存）</a>
@@ -59,6 +64,21 @@
             </div>
           </div>
         </nav>
+      </div>
+      <div class="mobile-home-menu" id="mobileHomeMenu" hidden>
+        <div class="mobile-home-menu__panel">
+          <a href="index.html" data-i18n="home">首页</a>
+          <a href="permanent.html" data-i18n="permanent">永久地址（建议保存）</a>
+          <a href="vpn.html" data-i18n="vpn">VPN（自用推荐）</a>
+          <a href="faq.html" data-i18n="faq">解压常见问题解答</a>
+          <a href="donate.html" data-i18n="donate">捐赠方式（自愿）</a>
+          <a href="find-game.html" data-i18n="findGame">代找游戏</a>
+          <button type="button" class="mobile-home-menu__item mobile-home-menu__item--icon" data-mobile-action="theme"><span aria-hidden="true">🌙</span><span>月亮图标</span></button>
+          <button type="button" class="mobile-home-menu__item mobile-home-menu__item--icon" data-mobile-action="search"><span aria-hidden="true">🔍</span><span>搜索图标</span></button>
+          <button type="button" class="mobile-home-menu__item mobile-home-menu__item--lang" data-mobile-action="lang"><span aria-hidden="true">文/A</span><span>文/A</span></button>
+          <a href="login.html" data-i18n="nav_login">登录</a>
+          <a href="register.html" data-i18n="nav_register">注册</a>
+        </div>
       </div>
       <div class="home-banner__center">
         <h1 data-i18n="heroTitle">全站资源免登免费下载</h1>
