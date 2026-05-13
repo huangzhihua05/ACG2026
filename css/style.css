@@ -1154,9 +1154,9 @@ img {
 
   .mobile-home-menu__item--icon span:first-child,
   .mobile-home-menu__item--lang span:first-child {
-    width: 22px;
+    width: auto;
     text-align: center;
-    flex: 0 0 22px;
+    flex: 0 0 auto;
   }
 
   .mobile-home-menu__item--lang {
