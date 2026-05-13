@@ -1060,7 +1060,7 @@ img {
   }
 
   .nav-main--banner {
-    width: 100%;
+    width: auto;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -1070,6 +1070,8 @@ img {
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    margin-left: auto;
+    padding-right: 44px;
   }
 
   .nav-main--banner::-webkit-scrollbar {
@@ -1087,6 +1089,10 @@ img {
     justify-content: center;
   }
 
+  .nav-main--banner > a:not(.nav-home-link) {
+    display: none;
+  }
+
   .nav-actions--banner {
     width: auto;
     margin-left: auto;
@@ -1094,6 +1100,11 @@ img {
     gap: 6px;
     flex-wrap: nowrap;
     justify-content: flex-end;
+  }
+
+  .nav-auth,
+  .nav-actions--banner {
+    display: none;
   }
 
   .nav-auth {
@@ -1136,21 +1147,26 @@ img {
 
   .home-banner__topbar {
     width: 100%;
-    gap: 6px;
-    flex-direction: column;
-    align-items: stretch;
+    gap: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     overflow: visible;
     position: relative;
     z-index: 3;
   }
 
   .logo--banner {
-    font-size: 1rem;
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    font-size: 0.98rem;
     white-space: nowrap;
     flex: 0 0 auto;
-    max-width: 100%;
+    max-width: 58vw;
     overflow: hidden;
     text-overflow: ellipsis;
+    z-index: 4;
   }
 
   .logo--banner .logo__image {
