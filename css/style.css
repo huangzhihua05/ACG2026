@@ -1085,7 +1085,7 @@ img {
     display: none;
     align-items: stretch;
     justify-content: flex-end;
-    background: rgba(0, 0, 0, 0.36);
+    background: rgba(0, 0, 0, 0.42);
     padding: 0;
     backdrop-filter: blur(6px);
     isolation: isolate;
@@ -1124,6 +1124,7 @@ img {
     will-change: transform;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    margin-left: auto;
   }
 
   .mobile-home-menu__panel a,
