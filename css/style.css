@@ -1068,7 +1068,7 @@ img {
 
   .nav-main--banner > a:not(.nav-home-link),
   .nav-main--banner > .nav-auth {
-    display: inline-flex;
+    display: none;
   }
 
   .nav-actions,
@@ -1093,8 +1093,8 @@ img {
   }
 
   .home-banner__img {
-    max-height: 300px;
-    min-height: 300px;
+    max-height: 260px;
+    min-height: 260px;
     object-fit: cover;
     filter: brightness(0.84) contrast(1.06) saturate(0.97);
   }
@@ -1108,7 +1108,7 @@ img {
 
   .home-banner__topbar {
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     overflow: visible;
   }
@@ -1117,6 +1117,9 @@ img {
     font-size: 1rem;
     white-space: nowrap;
     flex: 0 0 auto;
+    max-width: 52vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .logo--banner .logo__image {
@@ -1127,7 +1130,7 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 43%;
     transform: translate(-50%, -50%);
     width: min(92vw, 760px);
     padding: 0;
@@ -1137,12 +1140,14 @@ img {
     font-size: clamp(1.05rem, 5vw, 1.45rem);
     margin-bottom: 4px;
     line-height: 1.2;
+    max-width: 92vw;
   }
 
   .home-banner__center p {
     margin: 2px 0 10px;
     font-size: 12px;
     line-height: 1.45;
+    max-width: 92vw;
   }
 
   .home-banner__search {
@@ -1152,7 +1157,7 @@ img {
     margin: 8px auto 6px;
     border-radius: 999px;
     backdrop-filter: blur(8px);
-    max-width: 560px;
+    max-width: min(560px, 92vw);
   }
 
   .home-banner__search svg {
@@ -1197,7 +1202,7 @@ img {
   .home-feature-strip {
     position: absolute;
     left: 50%;
-    bottom: -20px;
+    bottom: -18px;
     transform: translateX(-50%);
     width: calc(100% - 18px);
     max-width: none;
@@ -1251,7 +1256,7 @@ img {
   }
 
   .layout-wrap {
-    padding: 18px 10px 28px;
+    padding: 34px 10px 28px;
     gap: 12px;
   }
 
