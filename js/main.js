@@ -39,7 +39,7 @@
     localArticles.forEach((item) => {
       if (!mergedArticles.some((x) => String(x.id) === String(item.id))) mergedArticles.push(item);
     });
-    const normalizedMerged = attachPersistedTags(mergedArticles);
+    const normalizedMerged = attachPersistedTags(mergedArticles).map(mergeArticleTags);
     stateCache.data = { ...remote, articles: normalizedMerged };
     saveLocalArticles(normalizedMerged);
     syncTagsFromItems(normalizedMerged);
@@ -56,7 +56,7 @@
       try {
         const res = await apiFetch('/api/articles');
         const apiItems = Array.isArray(res.items) ? res.items : [];
-        const merged = attachPersistedTags([...apiItems, ...localItems]);
+        const merged = attachPersistedTags([...apiItems, ...localItems]).map(mergeArticleTags);
         stateCache.data.articles = merged;
         saveLocalArticles(merged);
         syncTagsFromItems(merged);
@@ -68,7 +68,7 @@
     try {
       const res = await apiFetch('/api/articles');
       const apiItems = Array.isArray(res.items) ? res.items : [];
-      const merged = attachPersistedTags(apiItems);
+      const merged = attachPersistedTags(apiItems).map(mergeArticleTags);
       stateCache.data.articles = merged;
       saveLocalArticles(merged);
       syncTagsFromItems(merged);
@@ -148,6 +148,15 @@
     });
     saveArticleTagsCache(map);
     return map;
+  }
+  function mergeArticleTags(article) {
+    const persisted = getPersistedTags(article && article.id);
+    if (Array.isArray(article && article.tags) && article.tags.length) return { ...article, tags: article.tags.slice() };
+    if (persisted.length) return { ...article, tags: persisted };
+    return { ...article, tags: [] };
+  }
+  function withMergedTags(article) {
+    return mergeArticleTags(attachPersistedTags([article])[0] || article || {});
   }
   function buildArticleExportPayload(article) {
     const normalized = normalizeArticle(article || {});
@@ -653,8 +662,29 @@
     const homeImportBtn = document.getElementById('importArticleBtn'); if (homeImportBtn && !homeImportBtn.dataset.boundImport) { homeImportBtn.dataset.boundImport = '1'; homeImportBtn.addEventListener('click', (e) => { const session = TengyouSession.get(); if (!isAdmin(session)) return; const input = document.getElementById('importArticleFileInput'); if (input) input.click(); }); }
     const homeImportInput = document.getElementById('importArticleFileInput'); if (homeImportInput && !homeImportInput.dataset.boundImport) { homeImportInput.dataset.boundImport = '1'; homeImportInput.addEventListener('change', async (e) => { const session = TengyouSession.get(); if (!isAdmin(session)) return; const input = e.currentTarget; const files = Array.from((input && input.files) || []); const debug = document.getElementById('importDebugInfo'); if (debug) { debug.hidden = false; debug.textContent = '正在导入，请稍候...'; } if (!files.length) { if (debug) { debug.hidden = false; debug.textContent = '没有检测到文件，请重新选择导出的 JSON。'; } alert('未检测到文件，请确保选择了 JSON 文件（后缀 .json）'); if (input) input.value = ''; return; } let successCount = 0; let lastTitle = ''; const importedTitles = []; try { for (const file of files) { if (!String(file.name || '').toLowerCase().endsWith('.json')) { throw new Error('请选择 JSON 文件'); } const imported = await importArticleFile(file); successCount += 1; lastTitle = imported && imported.title ? imported.title : lastTitle; importedTitles.push(imported && imported.title ? imported.title : file.name); } const localNow = loadLocalArticles(); const msg = (successCount > 1 ? ('导入成功：' + successCount + ' 个文件') : ('导入成功：' + (lastTitle || '文章'))); if (debug) { debug.hidden = false; debug.textContent = msg + '｜本地文章数：' + localNow.length + '｜导入标题：' + importedTitles.join('、'); } stateCache.data.articles = localNow; await renderHome(); await renderRanking(); await Promise.resolve(); alert(msg); if (debug) { debug.hidden = false; debug.textContent = msg + '｜本地文章数：' + localNow.length + '｜导入标题：' + importedTitles.join('、'); } } catch (err) { const failMsg = err.message || '导入失败'; if (debug) { debug.hidden = false; debug.textContent = '导入失败：' + failMsg; } alert(failMsg); } finally { if (input) input.value = ''; } }); }
 
-    const homePag = document.getElementById('homePagination'); if (homePag) homePag.addEventListener('click', (e) => { const btn = e.target.closest('[data-home-page]'); if (!btn) return; document.getElementById('homeArticleList').setAttribute('data-current-page', btn.dataset.homePage); renderHome(); });
-    const rankPag = document.getElementById('rankingPagination'); if (rankPag && !rankPag.dataset.boundRanking) { rankPag.dataset.boundRanking = '1'; rankPag.addEventListener('click', (e) => { const pageBtn = e.target.closest('[data-goto-page]'); if (!pageBtn) return; const nextPage = parseInt(pageBtn.dataset.gotoPage || '1', 10); if (!Number.isFinite(nextPage) || nextPage < 1) return; const listEl = document.getElementById('rankingList'); if (!listEl) return; listEl.setAttribute('data-ranking-page', String(nextPage)); renderRanking(); }); }
+    const homePag = document.getElementById('homePagination');
+    if (homePag) {
+      homePag.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-home-page]');
+        if (!btn) return;
+        document.getElementById('homeArticleList').setAttribute('data-current-page', btn.dataset.homePage);
+        renderHome();
+      });
+    }
+    const rankPag = document.getElementById('rankingPagination');
+    if (rankPag && !rankPag.dataset.boundRanking) {
+      rankPag.dataset.boundRanking = '1';
+      rankPag.addEventListener('click', (e) => {
+        const pageBtn = e.target.closest('[data-goto-page]');
+        if (!pageBtn) return;
+        const nextPage = parseInt(pageBtn.dataset.gotoPage || '1', 10);
+        if (!Number.isFinite(nextPage) || nextPage < 1) return;
+        const listEl = document.getElementById('rankingList');
+        if (!listEl) return;
+        listEl.setAttribute('data-ranking-page', String(nextPage));
+        renderRanking();
+      });
+    }
     const boardForm = document.getElementById('boardForm'); if (boardForm) boardForm.addEventListener('submit', async (e) => { e.preventDefault(); const session = TengyouSession.get(); if (!session) return alert('请先登录'); const ta = boardForm.querySelector('textarea[name="content"]'); const body = ta.value.trim(); if (!body) return; try { await apiCreateBoardPost({ nickname: session.username, body, ts: Date.now() }); ta.value = ''; await renderBoard(); } catch (err) { alert(err.message || '发布失败'); } });
     const boardView = document.getElementById('boardView'); if (boardView) boardView.addEventListener('click', (e) => { const btn = e.target.closest('[data-open-post]'); if (btn) location.href = 'find-game.html#post=' + encodeURIComponent(btn.dataset.openPost); });
     document.addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; const postModalEl = document.getElementById('homePostModal'); const viewer = document.getElementById('homePostMediaViewer'); const editModalNow = document.getElementById('homeArticleEditModal'); if (postModalEl && !postModalEl.hidden) postModalEl.hidden = true; if (viewer && !viewer.hidden) viewer.hidden = true; if (editModalNow && !editModalNow.hidden) editModalNow.hidden = true; });
