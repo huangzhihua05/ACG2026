@@ -1082,13 +1082,22 @@ img {
     position: fixed;
     inset: 0;
     z-index: 2147483647;
-    display: flex;
+    display: none;
     align-items: stretch;
     justify-content: flex-end;
     background: rgba(0, 0, 0, 0.34);
     padding: 0;
     backdrop-filter: blur(6px);
     isolation: isolate;
+  }
+
+  .mobile-home-menu.is-open {
+    display: flex;
+  }
+
+  body.mobile-home-menu-open {
+    overflow: hidden;
+    touch-action: none;
   }
 
   .mobile-home-menu[hidden] {
