@@ -1092,6 +1092,39 @@ img {
     pointer-events: none;
   }
 
+  body.mobile-lang-menu-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  body.mobile-lang-menu-open .lang-switch__menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 280px);
+    max-height: 70vh;
+    overflow: auto;
+    z-index: 2147483647;
+    background: rgba(17, 24, 39, 0.98);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  }
+
+  body.mobile-lang-menu-open .lang-switch__menu::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.42);
+    z-index: -1;
+  }
+
+  body.mobile-lang-menu-open .lang-switch__menu button {
+    font-size: 15px;
+    padding: 10px 12px;
+  }
+
   .mobile-home-menu.is-open {
     display: flex;
     pointer-events: auto;

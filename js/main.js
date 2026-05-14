@@ -118,7 +118,7 @@
   function closeMobileHomeMenu() { const menu = document.getElementById('mobileHomeMenu'); const btn = document.getElementById('mobileMenuBtn'); if (!menu || !btn) return; document.body.classList.remove('mobile-home-menu-open'); menu.classList.remove('is-open'); menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
   function toggleMobileHomeMenu() { const menu = document.getElementById('mobileHomeMenu'); if (!menu) return; if (menu.hidden) openMobileHomeMenu(); else closeMobileHomeMenu(); }
   function ensureMobileHomeMenu() { if (document.getElementById('mobileHomeMenu')) return; const overlay = document.querySelector('.home-banner__overlay'); if (!overlay) return; const menu = document.createElement('div'); menu.className = 'mobile-home-menu'; menu.id = 'mobileHomeMenu'; menu.hidden = true; menu.innerHTML = '<div class="mobile-home-menu__panel" role="dialog" aria-modal="true" aria-label="手机菜单"><a href="index.html" data-i18n="home">首页</a><a href="permanent.html" data-i18n="permanent">永久地址（建议保存）</a><a href="vpn.html" data-i18n="vpn">VPN（自用推荐）</a><a href="faq.html" data-i18n="faq">解压常见问题解答</a><a href="donate.html" data-i18n="donate">捐赠方式（自愿）</a><a href="find-game.html" data-i18n="findGame">代找游戏</a><button type="button" class="mobile-home-menu__item mobile-home-menu__item--icon" data-mobile-action="theme"><span aria-hidden="true">☀️</span><span>白天/黑夜</span></button><button type="button" class="mobile-home-menu__item mobile-home-menu__item--icon" data-mobile-action="search"><span aria-hidden="true">🔎</span><span>🔎搜索</span></button><button type="button" class="mobile-home-menu__item mobile-home-menu__item--lang" data-mobile-action="lang"><span aria-hidden="true">文/A</span><span>文/A</span></button><a href="login.html" data-i18n="nav_login">登录</a><a href="register.html" data-i18n="nav_register">注册</a></div>'; document.body.appendChild(menu); applyI18n(getLang()); }
-  function bindMobileHomeMenu() { ensureMobileHomeMenu(); const btn = document.getElementById('mobileMenuBtn'); const menu = document.getElementById('mobileHomeMenu'); if (!btn || !menu || btn.dataset.boundMobileMenu) return; btn.dataset.boundMobileMenu = '1'; menu.hidden = true; const triggerLangSwitch = () => { const current = getLang(); const idx = MOBILE_LANGS.indexOf(current); const next = MOBILE_LANGS[(idx + 1) % MOBILE_LANGS.length] || 'zh-CN'; setLang(next); applyI18n(next); }; const triggerSearch = () => { const searchBtn = document.getElementById('searchIconBtn'); if (searchBtn) searchBtn.click(); else { const input = document.getElementById('heroSearchInput'); const q = (input && input.value || '').trim(); if (q) location.href = 'search.html?q=' + encodeURIComponent(q); } }; btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toggleMobileHomeMenu(); }); menu.addEventListener('click', (e) => { const link = e.target.closest('a'); const action = e.target.closest('[data-mobile-action]'); if (action) { const type = action.getAttribute('data-mobile-action'); if (type === 'theme') { toggleTheme(); closeMobileHomeMenu(); return; } if (type === 'search') { triggerSearch(); closeMobileHomeMenu(); return; } if (type === 'lang') { triggerLangSwitch(); closeMobileHomeMenu(); return; } return; } if (link) closeMobileHomeMenu(); }); menu.addEventListener('click', (e) => { if (e.target === menu) closeMobileHomeMenu(); }); document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) closeMobileHomeMenu(); }); document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileHomeMenu(); }); window.addEventListener('resize', () => { if (window.innerWidth > 640) closeMobileHomeMenu(); }); }
+  function bindMobileHomeMenu() { ensureMobileHomeMenu(); const btn = document.getElementById('mobileMenuBtn'); const menu = document.getElementById('mobileHomeMenu'); if (!btn || !menu || btn.dataset.boundMobileMenu) return; btn.dataset.boundMobileMenu = '1'; menu.hidden = true; const triggerLangSwitch = () => { const langBtn = document.getElementById('langSwitchBtn'); const langMenu = document.getElementById('langSwitchMenu'); if (langBtn && langMenu) { langBtn.click(); langMenu.hidden = false; const firstOption = langMenu.querySelector('[data-lang]'); if (firstOption && typeof firstOption.focus === 'function') firstOption.focus(); return; } const current = getLang(); const idx = MOBILE_LANGS.indexOf(current); const next = MOBILE_LANGS[(idx + 1) % MOBILE_LANGS.length] || 'zh-CN'; setLang(next); applyI18n(next); }; const triggerSearch = () => { const searchBtn = document.getElementById('searchIconBtn'); if (searchBtn) searchBtn.click(); else { const input = document.getElementById('heroSearchInput'); const q = (input && input.value || '').trim(); if (q) location.href = 'search.html?q=' + encodeURIComponent(q); } }; btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toggleMobileHomeMenu(); }); menu.addEventListener('click', (e) => { const link = e.target.closest('a'); const action = e.target.closest('[data-mobile-action]'); if (action) { const type = action.getAttribute('data-mobile-action'); if (type === 'theme') { toggleTheme(); closeMobileHomeMenu(); return; } if (type === 'search') { triggerSearch(); closeMobileHomeMenu(); return; } if (type === 'lang') { triggerLangSwitch(); closeMobileHomeMenu(); return; } return; } if (link) closeMobileHomeMenu(); }); menu.addEventListener('click', (e) => { if (e.target === menu) closeMobileHomeMenu(); }); document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) closeMobileHomeMenu(); }); document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileHomeMenu(); }); window.addEventListener('resize', () => { if (window.innerWidth > 640) closeMobileHomeMenu(); }); const navLangBtn = document.getElementById('langSwitchBtn'); const navLangMenu = document.getElementById('langSwitchMenu'); if (navLangBtn && navLangMenu && !navLangBtn.dataset.boundMobileLang) { navLangBtn.dataset.boundMobileLang = '1'; navLangBtn.addEventListener('click', (e) => { if (window.innerWidth > 640) return; e.preventDefault(); e.stopPropagation(); document.body.classList.add('mobile-lang-menu-open'); navLangMenu.hidden = false; const firstOption = navLangMenu.querySelector('[data-lang]'); if (firstOption && typeof firstOption.focus === 'function') firstOption.focus(); }); navLangMenu.addEventListener('click', () => { document.body.classList.remove('mobile-lang-menu-open'); }); document.addEventListener('click', (e) => { if (window.innerWidth <= 640 && !navLangMenu.hidden && !navLangMenu.contains(e.target) && !navLangBtn.contains(e.target)) { navLangMenu.hidden = true; document.body.classList.remove('mobile-lang-menu-open'); } }); document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { navLangMenu.hidden = true; document.body.classList.remove('mobile-lang-menu-open'); } }); } }
   function getDraftStorageKey() { const session = TengyouSession.get(); return 'tengyou-home-draft:' + String(session && session.email ? session.email : 'guest').toLowerCase(); }
   function getArticlesStorageKey() { return 'tengyou-home-articles'; }
   function saveLocalDraft(payload) { try { localStorage.setItem(getDraftStorageKey(), JSON.stringify(payload)); } catch (e) {} }
@@ -490,6 +490,11 @@
       { input: document.getElementById('sidebarSearch'), button: document.getElementById('searchConfirmBtn') },
     ];
     const goSearch = (input) => { const q = (input && input.value || '').trim(); if (q) location.href = 'search.html?q=' + encodeURIComponent(q); };
+    const focusSearch = (input) => {
+      if (!input) return;
+      input.focus();
+      try { input.select(); } catch (e) {}
+    };
     targets.forEach(({ input, button }) => {
       if (input && !input.dataset.boundSearch) {
         input.dataset.boundSearch = '1';
@@ -497,19 +502,46 @@
       }
       if (button && !button.dataset.boundSearch) {
         button.dataset.boundSearch = '1';
-        button.addEventListener('click', () => {
-          const q = (input && input.value || '').trim();
-          console.log('[search-click]', q, button.id, input && input.id);
-          alert('搜索按钮已点击：' + (q || '空')); 
-          goSearch(input);
-        });
+        button.addEventListener('click', () => goSearch(input));
       }
       if (button && !button.dataset.boundPointer) {
         button.dataset.boundPointer = '1';
-        button.addEventListener('pointerup', () => console.log('[search-pointerup]', button.id));
+        button.addEventListener('pointerup', () => {});
       }
     });
+
+    const navSearchBtn = document.getElementById('searchIconBtn');
+    if (navSearchBtn && !navSearchBtn.dataset.boundSearch) {
+      navSearchBtn.dataset.boundSearch = '1';
+      navSearchBtn.addEventListener('click', () => {
+        const heroInput = document.getElementById('heroSearchInput');
+        const sidebarInput = document.getElementById('sidebarSearch');
+        const activeInput = heroInput || sidebarInput || document.getElementById('homeSearchInput');
+        const q = (activeInput && activeInput.value || '').trim();
+        if (q) {
+          goSearch(activeInput);
+          return;
+        }
+        focusSearch(activeInput);
+      });
+    }
   }
+
+  document.addEventListener('click', (e) => {
+    const navBtn = e.target && e.target.closest ? e.target.closest('#searchIconBtn') : null;
+    if (!navBtn) return;
+    const heroInput = document.getElementById('heroSearchInput');
+    const homeInput = document.getElementById('homeSearchInput');
+    const sidebarInput = document.getElementById('sidebarSearch');
+    const activeInput = heroInput || homeInput || sidebarInput;
+    if (!activeInput) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof activeInput.focus === 'function') activeInput.focus();
+    if (typeof activeInput.scrollIntoView === 'function') activeInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const q = (activeInput.value || '').trim();
+    if (q) location.href = 'search.html?q=' + encodeURIComponent(q);
+  }, true);
 
   function initAuth() {
     const loginAccountHistory = document.getElementById('loginAccountHistory');
