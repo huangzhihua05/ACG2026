@@ -1301,7 +1301,7 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 52%;
+    top: calc(52% - 20px);
     transform: translate(-50%, -50%);
     width: min(92vw, 760px);
     padding: 0;
