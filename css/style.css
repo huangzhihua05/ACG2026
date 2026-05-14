@@ -1178,15 +1178,7 @@ img {
   }
 
   .home-banner__img {
-    display: block;
-    width: 100%;
-    height: auto;
-    max-height: 540px;
-    object-fit: contain;
-    margin: 0;
-    border-radius: 0;
-    background: #000;
-    filter: brightness(1.04) contrast(1.01) saturate(0.98);
+    display: none;
   }
 
   .home-banner__overlay {
