@@ -1378,7 +1378,7 @@ img {
   .home-banner__chips {
     position: absolute;
     left: 50%;
-    top: 10%;
+    top: 50%;
     transform: translateX(-50%);
     width: 100%;
     gap: 6px;
