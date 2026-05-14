@@ -1301,7 +1301,7 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 58%;
+    top: 85%;
     transform: translate(-50%, -50%);
     width: min(92vw, 760px);
     padding: 0;
@@ -1317,7 +1317,7 @@ img {
   .home-banner__center h1 {
     position: absolute;
     left: 50%;
-    top: -150px;
+    top: -132px;
     transform: translateX(-50%);
     font-size: clamp(1.02rem, 4.8vw, 1.35rem);
     margin: 0;
