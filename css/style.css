@@ -1301,7 +1301,7 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 46%;
+    top: 52%;
     transform: translate(-50%, -50%);
     width: min(92vw, 760px);
     padding: 0;
@@ -1317,8 +1317,8 @@ img {
   .home-banner__center h1 {
     position: absolute;
     left: 50%;
-    top: 12%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    transform: translate(-50%, -100%);
     font-size: clamp(1.02rem, 4.8vw, 1.35rem);
     margin: 0;
     line-height: 1.2;
@@ -1329,8 +1329,8 @@ img {
   .home-banner__center p {
     position: absolute;
     left: 50%;
-    top: 20%;
-    transform: translate(-50%, -50%);
+    top: 18px;
+    transform: translateX(-50%);
     margin: 0;
     font-size: 12px;
     line-height: 1.45;
@@ -1349,8 +1349,8 @@ img {
     max-width: min(560px, 92vw);
     position: absolute;
     left: 50%;
-    top: 30%;
-    transform: translate(-50%, -50%);
+    top: 72px;
+    transform: translateX(-50%);
   }
 
   .home-banner__search svg {
