@@ -1390,16 +1390,16 @@ img {
   }
 
   .home-banner__translate-tip {
-    position: static;
-    left: auto;
-    right: auto;
-    bottom: auto;
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 10px;
     width: auto;
-    margin-top: 8px;
+    margin-top: 0;
     font-size: 10px;
     line-height: 1.4;
     text-align: center;
-    z-index: 3;
+    z-index: 5;
     pointer-events: none;
   }
 
