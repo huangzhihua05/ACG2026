@@ -1293,7 +1293,7 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 56%;
+    top: 50%;
     transform: translate(-50%, -50%);
     width: min(92vw, 760px);
     padding: 0;
@@ -1309,7 +1309,7 @@ img {
   .home-banner__center h1 {
     position: absolute;
     left: 50%;
-    top: -118px;
+    top: -86px;
     transform: translateX(-50%);
     font-size: clamp(1.02rem, 4.8vw, 1.35rem);
     margin: 0;
@@ -1321,7 +1321,7 @@ img {
   .home-banner__center p {
     position: absolute;
     left: 50%;
-    top: -90px;
+    top: -58px;
     transform: translateX(-50%);
     margin: 0;
     font-size: 12px;
@@ -1341,7 +1341,7 @@ img {
     max-width: min(560px, 92vw);
     position: absolute;
     left: 50%;
-    top: -56px;
+    top: -26px;
     transform: translateX(-50%);
   }
 
