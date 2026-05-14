@@ -1293,10 +1293,10 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 56%;
     transform: translate(-50%, -50%);
     width: min(92vw, 760px);
-    padding: 0 0 28px;
+    padding: 0;
     z-index: 1;
     text-align: center;
     pointer-events: none;
@@ -1307,17 +1307,27 @@ img {
   }
 
   .home-banner__center h1 {
+    position: absolute;
+    left: 50%;
+    top: -118px;
+    transform: translateX(-50%);
     font-size: clamp(1.02rem, 4.8vw, 1.35rem);
-    margin: 0 0 6px;
+    margin: 0;
     line-height: 1.2;
     max-width: 100%;
+    width: 100%;
   }
 
   .home-banner__center p {
-    margin: 0 0 10px;
+    position: absolute;
+    left: 50%;
+    top: -90px;
+    transform: translateX(-50%);
+    margin: 0;
     font-size: 12px;
     line-height: 1.45;
     max-width: 100%;
+    width: 100%;
   }
 
   .home-banner__search {
@@ -1329,6 +1339,10 @@ img {
     border-radius: 999px;
     backdrop-filter: blur(8px);
     max-width: min(560px, 92vw);
+    position: absolute;
+    left: 50%;
+    top: -56px;
+    transform: translateX(-50%);
   }
 
   .home-banner__search svg {
