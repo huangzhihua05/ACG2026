@@ -1303,8 +1303,8 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: calc(58% - 16lh);
-    transform: translate(-50%, -50%);
+    top: 84px;
+    transform: translateX(-50%);
     width: min(92vw, 760px);
     padding: 0;
     z-index: 3;
@@ -3864,8 +3864,8 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 58%;
-    transform: translate(-50%, -50%);
+    top: 72px;
+    transform: translateX(-50%);
     z-index: 4;
     width: min(92vw, 760px);
     max-width: 100%;
