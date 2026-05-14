@@ -1301,8 +1301,8 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 38%;
-    transform: translate(-50%, -50%);
+    top: 16%;
+    transform: translateX(-50%);
     width: min(92vw, 760px);
     padding: 0;
     z-index: 3;
