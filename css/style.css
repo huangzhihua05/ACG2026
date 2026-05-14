@@ -1175,13 +1175,15 @@ img {
     width: 100%;
     margin-left: 0;
     position: relative;
+    min-height: 520px;
   }
 
   .home-banner__img {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 540px;
+    min-height: 520px;
+    max-height: none;
     object-fit: cover;
     margin: 0;
     border-radius: 0;
@@ -1301,8 +1303,8 @@ img {
   .home-banner__center {
     position: absolute;
     left: 50%;
-    top: 60px;
-    transform: translateX(-50%);
+    top: 58%;
+    transform: translate(-50%, -50%);
     width: min(92vw, 760px);
     padding: 0;
     z-index: 3;
