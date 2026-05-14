@@ -1376,11 +1376,16 @@ img {
   }
 
   .home-banner__chips {
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    transform: translateX(-50%);
     width: 100%;
     gap: 6px;
-    margin-top: 8px;
+    margin-top: 0;
     max-width: 100%;
     justify-content: center;
+    z-index: 2;
   }
 
   .home-banner__chips a {
