@@ -1,5 +1,5 @@
 (function () {
-  var STORAGE_KEY = "tengyou-find-game-posts";
+  var API_BASE = window.TENGYOU_API_BASE || window.__TENGYOU_API_BASE || "https://api.12345588.xyz";
   var MAX_POST = 2000;
   var MAX_COMMENT = 1000;
   var POSTS_PER_PAGE = 15;
@@ -28,6 +28,8 @@
   function normalizeComment(c) {
     return {
       id: c.id != null ? c.id : Date.now() + Math.random(),
+      postId: c.postId != null ? c.postId : null,
+      parentId: c.parentId != null ? c.parentId : null,
       nickname: c.nickname || "匿名旅人",
       body: c.body || "",
       ts: c.ts || 0,
@@ -37,30 +39,102 @@
     };
   }
 
-  function loadBoard() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { posts: [] };
-      var data = JSON.parse(raw);
-      var list = Array.isArray(data) ? data : data && Array.isArray(data.posts) ? data.posts : [];
-      return {
-        posts: list.map(function (p) {
-          return {
-            id: p.id != null ? p.id : Date.now() + Math.random(),
-            nickname: p.nickname || "匿名旅人",
-            body: p.body || "",
-            ts: p.ts || 0,
-            comments: Array.isArray(p.comments) ? p.comments.map(normalizeComment) : [],
-          };
-        }),
-      };
-    } catch (e) {}
-    return { posts: [] };
+  function apiFetch(path, options) {
+    options = options || {};
+    return fetch(API_BASE + path, {
+      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+      ...options,
+    }).then(async function (res) {
+      var text = await res.text();
+      var data = null;
+      try { data = text ? JSON.parse(text) : null; } catch (e) { data = text; }
+      if (!res.ok) throw new Error((data && data.message) || "请求失败");
+      return data;
+    });
   }
 
-  function saveBoard(board) {
+  async function loadState() {
+    var res = await apiFetch("/api/state");
+    return (res && res.item) || {};
+  }
+
+  async function saveState(state) {
+    var res = await apiFetch("/api/state", { method: "PUT", body: JSON.stringify(state || {}) });
+    return (res && res.item) || state || {};
+  }
+
+  function normalizePost(p) {
+    return {
+      id: p.id != null ? p.id : Date.now() + Math.random(),
+      nickname: p.nickname || "匿名旅人",
+      body: p.body || "",
+      ts: p.ts || 0,
+      comments: Array.isArray(p.comments) ? p.comments.map(normalizeComment) : [],
+      likes: typeof p.likes === "number" ? p.likes : 0,
+      isPinned: !!p.isPinned,
+    };
+  }
+
+  async function loadBoard() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+      var res = await apiFetch("/api/board-posts");
+      return { posts: Array.isArray(res.items) ? res.items.map(function (p) { return normalizePost(p); }) : [] };
+    } catch (e) {
+      return { posts: [] };
+    }
+  }
+
+  async function loadComments(postId) {
+    try {
+      var res = await apiFetch("/api/board-posts/" + encodeURIComponent(postId) + "/comments");
+      return Array.isArray(res.items) ? res.items.map(normalizeComment) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async function saveBoard(board) {
+    var posts = Array.isArray(board && board.posts) ? board.posts : [];
+    try {
+      for (var i = 0; i < posts.length; i++) {
+        var post = posts[i];
+        if (!post || post.__deleted) continue;
+        if (post.__synced) {
+          await apiFetch("/api/board-posts/" + encodeURIComponent(post.id), {
+            method: "PATCH",
+            body: JSON.stringify({
+              nickname: post.nickname,
+              body: post.body,
+              ts: post.ts,
+              likes: post.likes || 0,
+              isPinned: !!post.isPinned,
+            }),
+          });
+        } else {
+          var created = await apiFetch("/api/board-posts", {
+            method: "POST",
+            body: JSON.stringify({
+              nickname: post.nickname,
+              body: post.body,
+              ts: post.ts,
+            }),
+          });
+          if (created && created.item && created.item.id != null) {
+            post.id = created.item.id;
+          }
+          post.__synced = true;
+        }
+      }
+    } catch (e) {}
+  }
+            }),
+          });
+          if (created && created.item && created.item.id != null) {
+            post.id = created.item.id;
+          }
+          post.__synced = true;
+        }
+      }
     } catch (e) {}
   }
 
@@ -579,10 +653,10 @@
     root.appendChild(detail);
   }
 
-  function initPage() {
+  async function initPage() {
     updateSessionBar();
     updateFormVisibility();
-    var board = loadBoard();
+    var board = await loadBoard();
     if (viewState.mode === "detail" && viewState.postId != null) {
       renderDetail(board, viewState.postId);
     } else {
@@ -595,7 +669,7 @@
 
     var form = document.getElementById("boardForm");
     if (form) {
-      form.addEventListener("submit", function (e) {
+      form.addEventListener("submit", async function (e) {
         e.preventDefault();
         var user = getSessionUser();
         if (!user) {
@@ -614,12 +688,18 @@
           window.alert("内容包含违规信息，已自动阻止发布。");
           return;
         }
-        var board = loadBoard();
-        board.posts.push({ id: Date.now(), nickname: user, body: body, ts: Date.now(), comments: [] });
-        saveBoard(board);
-        currentPage = 1;
+        var board = await loadBoard();
+        var newPost = { id: Date.now(), nickname: user, body: body, ts: Date.now(), comments: [], __synced: false };
+        board.posts.push(newPost);
         renderList(board);
         form.reset();
+        try {
+          await saveBoard(board);
+          currentPage = 1;
+          await initPage();
+        } catch (err) {
+          window.alert("留言保存失败，请稍后重试。");
+        }
       });
     }
 
@@ -640,7 +720,7 @@
 
     var view = document.getElementById("boardView");
     if (view) {
-      view.addEventListener("click", function (e) {
+      view.addEventListener("click", async function (e) {
         var openBtn = e.target.closest("[data-open-post]");
         if (openBtn) {
           var user = getSessionUser();
@@ -674,7 +754,7 @@
     }
 
     if (view) {
-      view.addEventListener("submit", function (e) {
+      view.addEventListener("submit", async function (e) {
         var cForm = e.target;
         if (!cForm || !cForm.classList || !cForm.classList.contains("board-comment-form")) return;
         e.preventDefault();
@@ -683,13 +763,12 @@
           return;
         }
 
-        var board = loadBoard();
+        var board = await loadBoard();
         var postId = cForm.getAttribute("data-post-id");
         var post = findPost(board, postId);
         if (!post) {
           return;
         }
-
         var replyPostId = cForm.getAttribute("data-reply-post-id");
         if (replyPostId) {
           var parentCommentId = cForm.getAttribute("data-reply-comment-id");
@@ -717,10 +796,14 @@
           }
           if (!Array.isArray(parentComment.replies)) parentComment.replies = [];
           parentComment.replies.push({ id: Date.now(), nickname: user, body: replyText, ts: Date.now(), likes: 0, replies: [] });
-          saveBoard(board);
-          currentPage = 1;
+          renderDetail(board, viewState.postId);
           cForm.reset();
-          initPage();
+          try {
+            await saveBoard(board);
+            await initPage();
+          } catch (err) {
+            window.alert("回复保存失败，请稍后重试。");
+          }
           return;
         }
 
@@ -740,13 +823,21 @@
         }
         if (!Array.isArray(post.comments)) post.comments = [];
         post.comments.push({ id: Date.now(), nickname: user, body: text, ts: Date.now(), likes: 0, replies: [] });
-        saveBoard(board);
-        currentPage = 1;
+        if (viewState.mode === "detail") {
+          renderDetail(board, viewState.postId);
+        } else {
+          renderList(board);
+        }
         cForm.reset();
-        initPage();
+        try {
+          await saveBoard(board);
+          await initPage();
+        } catch (err) {
+          window.alert("评论保存失败，请稍后重试。");
+        }
       });
 
-      view.addEventListener("click", function (e) {
+      view.addEventListener("click", async function (e) {
         var toggle = e.target.closest("[data-toggle-reply-form]");
         if (toggle) {
           var key = toggle.getAttribute("data-toggle-reply-form");
@@ -761,19 +852,22 @@
         var session = window.TengyouSession && window.TengyouSession.get ? window.TengyouSession.get() : null;
         if (!session) return;
         var admin = String(session.email || "").toLowerCase() === "871412257@qq.com";
-        var board = loadBoard();
+        var board = await loadBoard();
         var pid = String((delPost || pinPost).getAttribute(delPost ? "data-delete-post" : "data-pin-post") || "");
         var post = findPost(board, pid);
         if (!post) return;
         if (delPost) {
           if (!admin && String(post.nickname || "") !== String(session.username || "")) return;
+          try {
+            await apiFetch("/api/board-posts/" + encodeURIComponent(pid), { method: "DELETE" });
+          } catch (err) {}
           board.posts = board.posts.filter(function (p) { return String(p.id) !== pid; });
-          saveBoard(board);
+          await saveBoard(board);
           initPage();
         } else if (pinPost) {
           if (!admin) return;
           post.isPinned = !post.isPinned;
-          saveBoard(board);
+          await saveBoard(board);
           initPage();
         }
       });
