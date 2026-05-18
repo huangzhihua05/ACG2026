@@ -539,7 +539,7 @@
           if (btn) { btn.disabled = true; btn.textContent = "发布中…"; }
           await apiFetch("/api/board-posts", {
             method: "POST",
-            body: JSON.stringify({ nickname: user, body: body, ts: tempPost.ts }),
+            body: JSON.stringify({ nickname: user, body: body, ts: Date.now() }),
           });
           form.reset();
           currentPage = 1;

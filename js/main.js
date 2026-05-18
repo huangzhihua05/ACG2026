@@ -475,10 +475,41 @@
     if (!article.tags.length) { const cachedTags = loadArticleTagsCache()[String(article.id)] || []; if (cachedTags.length) article.tags = cachedTags; }
     root.innerHTML = '<section class="content-section article-detail"><div class="article-detail__header">' + (article.isPinned ? '<span class="article-pin-badge">置顶</span>' : '') + '<h1 class="article-detail__title">' + esc(article.title) + '</h1></div><div class="article-detail__meta">发布时间 ' + fmt(article.ts) + '</div><div class="article-detail__actions"><button type="button" class="article-like-btn" data-article-like="' + article.id + '">点赞</button><span class="article-like-count">点赞 ' + (article.likes || 0) + '</span><span class="article-comment-count">评论 ' + article.comments.length + '</span></div>' + mediaGallery + mediaVideos + '<div class="board-post__text board-post__text--rich article-detail__content">' + contentHtml + '</div>' + articleTags + '<section class="content-section article-comments-section"><h2>评论区</h2><div id="articleCommentList"></div><form id="articleCommentForm" class="board-comment-form"><textarea name="comment" maxlength="1000" required placeholder="发表评论…"></textarea><button class="btn-primary btn-primary--sm" type="submit">发表评论</button></form></section></section>';
     const list = document.getElementById('articleCommentList'); const form = document.getElementById('articleCommentForm');
-    async function renderComments() { const comments = await apiLoadComments(id); list.innerHTML = comments.length ? comments.map((c) => '<div class="board-comment"><div class="board-comment__meta"><span class="board-comment__name">' + esc(c.nickname || '匿名旅人') + '</span><span class="board-comment__time">' + fmt(c.ts) + '</span></div><p class="board-comment__text">' + esc(c.body || '') + '</p></div>').join('') : '<p class="board-comment-empty">暂无评论</p>'; }
+    async function renderComments() { const comments = await apiLoadComments(id); const session = TengyouSession.get(); const user = session ? session.username : ''; const admin = !!session && String(session.email || '').toLowerCase() === '871412257@qq.com'; list.innerHTML = comments.length ? comments.map((c) => { const canDelete = admin || String(c.nickname || '') === String(user || ''); const canPin = admin; return '<div class="board-comment' + (c.isPinned ? ' board-comment--pinned' : '') + '" data-comment-id="' + esc(c.id) + '"><div class="board-comment__meta"><span class="board-comment__name">' + esc(c.nickname || '匿名旅人') + '</span><span class="board-comment__time">' + fmt(c.ts) + '</span>' + (c.isPinned ? '<span class="board-comment__pin">置顶</span>' : '') + '</div><p class="board-comment__text">' + esc(c.body || '') + '</p>' + (canPin || canDelete ? '<div class="board-comment__actions">' + (canPin ? '<button type="button" class="board-comment__btn" data-pin-comment="' + esc(c.id) + '">' + (c.isPinned ? '取消置顶' : '置顶') + '</button>' : '') + (canDelete ? '<button type="button" class="board-comment__btn board-comment__btn--danger" data-delete-comment="' + esc(c.id) + '">删除</button>' : '') + '</div>' : '') + '</div>'; }).join('') : '<p class="board-comment-empty">暂无评论</p>'; }
     await renderComments();
     if (form) form.addEventListener('submit', async (e) => { e.preventDefault(); const session = TengyouSession.get(); if (!session) return alert('请先登录'); const ta = form.querySelector('textarea[name="comment"]'); const body = ta.value.trim(); if (!body) return; const pendingComment = { nickname: session.username, authorEmail: session.email, body, ts: Date.now() }; const currentComments = await apiLoadComments(id); list.innerHTML = currentComments.concat([pendingComment]).map((c) => '<div class="board-comment"><div class="board-comment__meta"><span class="board-comment__name">' + esc(c.nickname || '匿名旅人') + '</span><span class="board-comment__time">' + fmt(c.ts) + '</span></div><p class="board-comment__text">' + esc(c.body || '') + '</p></div>').join(''); ta.value = ''; apiCreateComment(id, pendingComment).then(async () => { await renderArticle(); }).catch(async () => { await renderArticle(); }); });
     const likeBtn = root.querySelector('[data-article-like]'); if (likeBtn) likeBtn.addEventListener('click', async () => { await apiLikeArticle(id); await renderArticle(); await renderHome(); await renderRanking(); });
+
+    if (list) {
+      list.addEventListener('click', async (e) => {
+        const pinBtn = e.target.closest('[data-pin-comment]');
+        const delBtn = e.target.closest('[data-delete-comment]');
+        if (!pinBtn && !delBtn) return;
+        const session = TengyouSession.get();
+        if (!session) return;
+        const admin = String(session.email || '').toLowerCase() === '871412257@qq.com';
+        const commentId = String((pinBtn || delBtn).dataset.pinComment || (pinBtn || delBtn).dataset.deleteComment || '');
+        if (!commentId) return;
+        try {
+          if (delBtn) {
+            const comments = await apiLoadComments(id);
+            const target = comments.find((c) => String(c.id) === commentId);
+            if (!target) return;
+            if (!admin && String(target.nickname || '') !== String(session.username || '')) return;
+            await apiFetch('/api/articles/' + encodeURIComponent(id) + '/comments/' + encodeURIComponent(commentId), { method: 'DELETE' });
+          } else if (pinBtn) {
+            if (!admin) return;
+            const comments = await apiLoadComments(id);
+            const target = comments.find((c) => String(c.id) === commentId);
+            if (!target) return;
+            await apiFetch('/api/articles/' + encodeURIComponent(id) + '/comments/' + encodeURIComponent(commentId), { method: 'PATCH', body: JSON.stringify({ isPinned: !target.isPinned }) });
+          }
+          await renderArticle();
+        } catch (err) {
+          alert('操作失败：' + (err && err.message ? err.message : '未知错误'));
+        }
+      });
+    }
   }
 
   async function renderBoard() { const view = document.getElementById('boardView'); if (!view) return; const posts = (await apiLoadBoardPosts()).slice().sort((a, b) => (b.ts || 0) - (a.ts || 0)); view.innerHTML = posts.length ? posts.map((p) => '<article class="board-thread"><div class="board-post"><div class="board-post__avatar" aria-hidden="true">' + esc((p.nickname || '匿').charAt(0)) + '</div><div class="board-post__body"><div class="board-post__head"><span class="board-post__name">' + esc(p.nickname || '匿名旅人') + '</span><span class="board-post__time">' + fmt(p.ts) + '</span></div><button type="button" class="board-post__title-btn" data-open-post="' + p.id + '">' + esc(p.body || '') + '</button></div></div></article>').join('') : '<p class="board-empty">暂无留言，登录后来发第一条吧～</p>'; }
