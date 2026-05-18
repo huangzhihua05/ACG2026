@@ -74,7 +74,21 @@
 
   async function loadBoard() {
     var res = await apiFetch("/api/board-posts");
-    return { posts: Array.isArray(res.items) ? res.items.map(normalizePost) : [] };
+    var posts = Array.isArray(res.items) ? res.items.map(normalizePost) : [];
+    var seen = {};
+    var unique = [];
+    for (var i = 0; i < posts.length; i++) {
+      var post = posts[i];
+      var key = String(post.nickname || "").trim().toLowerCase() + "|" + String(post.body || "").trim().toLowerCase();
+      var prev = seen[key];
+      if (prev && Math.abs((Number(prev.ts) || 0) - (Number(post.ts) || 0)) <= 3000) {
+        try { await apiFetch("/api/board-posts/" + encodeURIComponent(post.id), { method: "DELETE" }); } catch (err) {}
+        continue;
+      }
+      seen[key] = post;
+      unique.push(post);
+    }
+    return { posts: unique };
   }
 
   async function loadComments(postId) {
@@ -298,12 +312,12 @@
       head.appendChild(time);
 
       if (user) {
+        body.appendChild(head);
         var titleBtn = document.createElement("button");
         titleBtn.type = "button";
         titleBtn.className = "board-post__title-btn";
         titleBtn.setAttribute("data-open-post", String(p.id));
         titleBtn.textContent = p.body || "";
-        body.appendChild(head);
         body.appendChild(titleBtn);
       } else {
         var text = document.createElement("p");
@@ -525,7 +539,7 @@
           if (btn) { btn.disabled = true; btn.textContent = "发布中…"; }
           await apiFetch("/api/board-posts", {
             method: "POST",
-            body: JSON.stringify({ nickname: user, body: body, ts: Date.now() }),
+            body: JSON.stringify({ nickname: user, body: body, ts: tempPost.ts }),
           });
           form.reset();
           currentPage = 1;
@@ -541,8 +555,6 @@
         e.preventDefault();
         submitPost();
       });
-      var submitBtn = form.querySelector('button[type="submit"]');
-      if (submitBtn) submitBtn.addEventListener("click", function (e) { e.preventDefault(); submitPost(); });
     }
 
     var pagNav = document.getElementById("boardPagination");
