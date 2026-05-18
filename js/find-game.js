@@ -26,14 +26,24 @@
 
   function apiFetch(path, options) {
     options = options || {};
-    return fetch(API_BASE + path, {
-      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
-      ...options,
-    }).then(async function (res) {
+    var headers = Object.assign({}, options.headers || {});
+    var hasBody = options.body != null;
+    if (hasBody && !headers["Content-Type"]) {
+      headers["Content-Type"] = "text/plain; charset=utf-8";
+    }
+    return fetch(API_BASE + path, Object.assign({}, options, {
+      headers: headers,
+    })).then(async function (res) {
       var text = await res.text();
       var data = null;
       try { data = text ? JSON.parse(text) : null; } catch (e) { data = text; }
-      if (!res.ok) throw new Error((data && data.message) || "请求失败");
+      if (!res.ok) {
+        var message = (data && data.message) || (typeof data === "string" && data.trim()) || ("请求失败（HTTP " + res.status + "）");
+        var err = new Error(message);
+        err.status = res.status;
+        err.body = data;
+        throw err;
+      }
       return data;
     });
   }
@@ -374,7 +384,7 @@
     }
   }
 
-  function renderDetail(board, postId) {
+  async function renderDetail(board, postId) {
     var root = document.getElementById("boardView");
     if (!root) return;
     root.className = "board-view";
@@ -491,7 +501,7 @@
     updateFormVisibility();
     var board = await loadBoard();
     if (viewState.mode === "detail" && viewState.postId != null) {
-      renderDetail(board, viewState.postId);
+      await renderDetail(board, viewState.postId);
     } else {
       await renderList(board);
     }
@@ -502,16 +512,17 @@
 
     var form = document.getElementById("boardForm");
     if (form) {
-      form.addEventListener("submit", async function (e) {
-        e.preventDefault();
+      var submitPost = async function () {
         var user = getSessionUser();
-        if (!user) return;
+        if (!user) return window.alert("请先登录后再发布留言。");
         var bodyInput = form.querySelector('textarea[name="content"]');
         var body = bodyInput ? bodyInput.value.trim() : "";
-        if (!body) return;
+        if (!body) return window.alert("请先填写留言内容。");
         if (body.length > MAX_POST) return window.alert("内容请控制在 " + MAX_POST + " 字以内。");
         if (containsForbiddenContent(body)) return window.alert("内容包含违规信息，已自动阻止发布。");
         try {
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = "发布中…"; }
           await apiFetch("/api/board-posts", {
             method: "POST",
             body: JSON.stringify({ nickname: user, body: body, ts: Date.now() }),
@@ -520,9 +531,18 @@
           currentPage = 1;
           await initPage();
         } catch (err) {
-          window.alert("留言保存失败，请稍后重试。");
+          window.alert("留言保存失败：" + (err && err.message ? err.message : "未知错误"));
+        } finally {
+          var btn2 = form.querySelector('button[type="submit"]');
+          if (btn2) { btn2.disabled = false; btn2.textContent = "发布留言"; }
         }
+      };
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        submitPost();
       });
+      var submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.addEventListener("click", function (e) { e.preventDefault(); submitPost(); });
     }
 
     var pagNav = document.getElementById("boardPagination");
@@ -574,7 +594,7 @@
             await apiFetch("/api/board-posts/" + encodeURIComponent(postId), { method: "DELETE" });
             await initPage();
           } catch (err) {
-            window.alert("删除失败，请稍后重试。");
+            window.alert("删除失败：" + (err && err.message ? err.message : "未知错误"));
           }
           return;
         }
@@ -590,7 +610,7 @@
             });
             await initPage();
           } catch (err) {
-            window.alert("操作失败，请稍后重试。");
+            window.alert("操作失败：" + (err && err.message ? err.message : "未知错误"));
           }
         }
       });
@@ -625,7 +645,7 @@
           cForm.reset();
           await initPage();
         } catch (err) {
-          window.alert((replyPostId ? "回复" : "评论") + "保存失败，请稍后重试。");
+          window.alert((replyPostId ? "回复" : "评论") + "保存失败：" + (err && err.message ? err.message : "未知错误"));
         }
       });
     }
